@@ -1,10 +1,29 @@
-console.log("Sesion 5. Ejercicio01: Atardecer");
-console.log("THREE: ", THREE);
-console.log(gsap);
-
 // Variables globales
 let scene, camera, renderer, mesh, animationId;
-let isAnimating = false;
+let animationState = "idle"; // "idle", "running", "completed"
+
+// Crear el sol 3D
+function createSun() {
+    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const textureLoader = new THREE.TextureLoader();
+
+    textureLoader.load("./textura/t1.png", onTextureLoaded, undefined, onTextureError);
+
+    function onTextureLoaded(texture) {
+        const matcapMaterial = new THREE.MeshMatcapMaterial({ matcap: texture });
+        mesh = new THREE.Mesh(geometry, matcapMaterial);
+        mesh.position.set(-4, -1, -8);
+        scene.add(mesh);
+    }
+
+    function onTextureError(error) {
+        console.error("Error cargando textura:", error);
+        const basicMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700 });
+        mesh = new THREE.Mesh(geometry, basicMaterial);
+        mesh.position.set(-4, -1, -8);
+        scene.add(mesh);
+    }
+}
 
 // Inicialización de Three.js
 function initThreeJS() {
@@ -14,112 +33,122 @@ function initThreeJS() {
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
+    camera.position.z = 10;
 
-    // 🌞 Sol más pequeño
-    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-    const textureLoader = new THREE.TextureLoader();
-
-    textureLoader.load("./textura/t1.png", (texture) => {
-        const matcapMaterial = new THREE.MeshMatcapMaterial({ matcap: texture });
-        mesh = new THREE.Mesh(geometry, matcapMaterial);
-
-        // Posición inicial del sol 3D
-        mesh.position.set(-3, 0, -8);
-        scene.add(mesh);
-    });
+    createSun();
 
     renderer = new THREE.WebGLRenderer({ canvas });
     renderer.setSize(canvas.width, canvas.height);
-    renderer.render(scene, camera);
 }
 
-// Loop de animación Three.js
-function animate() {
-    if (mesh && isAnimating) {
+// Verificar si el sol está listo
+function isSunReady() {
+    return mesh !== null && mesh !== undefined;
+}
+
+// Verificar si se puede animar
+function canAnimate() {
+    return (animationState === "idle" || animationState === "completed") && isSunReady();
+}
+
+// Verificar si está animando
+function isAnimating() {
+    return animationState === "running";
+}
+
+// Rotar el sol
+function rotateSun() {
+    if (isSunReady() && isAnimating()) {
         mesh.rotation.x += 0.01;
         mesh.rotation.y += 0.01;
     }
+}
+
+// Loop de animación
+function animate() {
+    rotateSun();
     renderer.render(scene, camera);
     animationId = requestAnimationFrame(animate);
 }
 
-// Animación del sol en curva
-function startSunsetAnimation() {
-    if (isAnimating) return;
-    isAnimating = true;
-
-    // 🌞 HTML (.sol)
-    const tlHtml = gsap.timeline({
-        onComplete: () => { isAnimating = false; }
-    });
-
-    tlHtml.to(".sol", {
+// Subir el sol
+function moveSunUp() {
+    gsap.to(mesh.position, {
         duration: 2.5,
         x: 0,
-        y: -150, // sube
-        ease: "power2.out"
+        y: 3,
+        ease: "power2.out",
+        onComplete: moveSunDown
     });
+}
 
-    tlHtml.to(".sol", {
+// Bajar el sol
+function moveSunDown() {
+    gsap.to(mesh.position, {
         duration: 2.5,
-        x: 200,
-        y: 0, // baja
-        ease: "power2.in"
+        x: 4,
+        y: -1,
+        ease: "power2.in",
+        onComplete: finishAnimation
     });
+}
 
-    // 🌞 Three.js (mesh)
-    if (mesh) {
-        const tlMesh = gsap.timeline();
+// Terminar animación
+function finishAnimation() {
+    animationState = "completed";
+}
 
-        tlMesh.to(mesh.position, {
-            duration: 2.5,
-            x: 0,
-            y: 3, // sube
-            ease: "power2.out"
-        });
-
-        tlMesh.to(mesh.position, {
-            duration: 2.5,
-            x: 3,
-            y: 0, // baja
-            ease: "power2.in"
-        });
+// Iniciar animación del atardecer
+function startSunsetAnimation() {
+    if (canAnimate()) {
+        animationState = "running";
+        moveSunUp();
     }
 }
 
-// Reset de la animación
+// Resetear animación
 function resetAnimation() {
-    isAnimating = false;
-
-    // HTML
-    gsap.set(".sol", { x: 0, y: 0, backgroundColor: "#FFD700" });
-
-    // Three.js
-    if (mesh) {
-        gsap.set(mesh.position, { x: -3, y: 0, z: -8 });
+    animationState = "idle";
+    
+    if (isSunReady()) {
+        gsap.set(mesh.position, { x: -4, y: -1, z: -8 });
         mesh.rotation.set(0, 0, 0);
     }
 }
 
-// Eventos
-function setupEventListeners() {
-    document.getElementById("button").onclick = startSunsetAnimation;
-    document.getElementById("button2").onclick = resetAnimation;
+// Redimensionar ventana
+function handleResize() {
+    const canvas = document.getElementById("lienzo");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    window.onresize = () => {
-        const canvas = document.getElementById("lienzo");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        camera.aspect = canvas.width / canvas.height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(canvas.width, canvas.height);
-    };
+    camera.aspect = canvas.width / canvas.height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(canvas.width, canvas.height);
 }
 
-// Inicio
-document.addEventListener("DOMContentLoaded", () => {
+// Configurar eventos
+function setupEventListeners() {
+    const startButton = document.getElementById("button");
+    const resetButton = document.getElementById("button2");
+
+    if (startButton) {
+        startButton.onclick = startSunsetAnimation;
+    }
+    
+    if (resetButton) {
+        resetButton.onclick = resetAnimation;
+    }
+
+    window.onresize = handleResize;
+}
+
+// Inicializar aplicación
+function initApp() {
     initThreeJS();
     setupEventListeners();
     animate();
-});
+}
+
+// Inicio
+document.addEventListener("DOMContentLoaded", initApp);
