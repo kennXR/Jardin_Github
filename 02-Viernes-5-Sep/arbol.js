@@ -1,24 +1,19 @@
-console.log("Segundo ejercicio: Árbol frondoso");
-console.log("THREE: ", THREE);
-
+// Configuración de la escena 3D
 class SceneManager {
     constructor(canvas) {
-        this.canvas = canvas;
+        // Configurar escena básica
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xaadfff);
-        this.camera = new THREE.PerspectiveCamera(
-            45,
-            canvas.clientWidth / canvas.clientHeight,
-            0.1,
-            1000
-        );
+        
+        // Configurar cámara
+        this.camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
         this.camera.position.set(0, 2, 8);
-        this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
+        
+        // Configurar renderer
+        this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
         this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     }
-    getScene() {
-        return this.scene;
-    }
+
     startAnimation(callback) {
         const animate = () => {
             requestAnimationFrame(animate);
@@ -27,195 +22,173 @@ class SceneManager {
         };
         animate();
     }
+
     dispose() {
         this.renderer.dispose();
     }
 }
 
+// Configuración de iluminación
 class Lighting {
     constructor(scene) {
         this.scene = scene;
-        this.lights = {};
-        this.addLights();
-    }
-    addLights() {
+        
+        // Luz principal desde arriba
         const topLight = new THREE.DirectionalLight(0xffffff, 1.2);
         topLight.position.set(5, 10, 5);
-        this.scene.add(topLight);
-        this.lights["topLight"] = topLight;
+        scene.add(topLight);
+        
+        // Luz cálida lateral
         const warmLight = new THREE.PointLight(0xffaa55, 0.6, 50);
         warmLight.position.set(-4, 3, 4);
-        this.scene.add(warmLight);
-        this.lights["warmLight"] = warmLight;
+        scene.add(warmLight);
+        
+        // Luz ambiente general
         const ambient = new THREE.AmbientLight(0x404040, 0.8);
-        this.scene.add(ambient);
-        this.lights["ambient"] = ambient;
+        scene.add(ambient);
     }
-    toggleLight(name, enabled) {
-        if (this.lights[name]) this.lights[name].visible = enabled;
-    }
-    updateLightIntensity(name, intensity) {
-        if (this.lights[name]) this.lights[name].intensity = intensity;
-    }
+
     dispose() {
-        Object.values(this.lights).forEach(light => this.scene.remove(light));
+        // Las luces se limpian automáticamente al eliminar la escena
     }
 }
 
+// Cargador de texturas simplificado
 class TextureLoader {
     constructor() {
         this.loader = new THREE.TextureLoader();
     }
-    loadTexture(path, onLoad, onError) {
-        this.loader.load(path, onLoad, undefined, onError);
-    }
-    getDefaultMaterial() {
-        return new THREE.MeshStandardMaterial({
-            color: 0x228b22,
-            flatShading: true
-        });
+    
+    load(path, onLoad) {
+        this.loader.load(path, onLoad, undefined, () => console.warn(`No se pudo cargar: ${path}`));
     }
 }
 
+// Creación del árbol 3D
 class Tree {
-    constructor(scene, texture) {
+    constructor(scene, foliageTexture, trunkTexture) {
         this.scene = scene;
-        this.meshes = [];
-        this.texture = texture;
-        this.material = new THREE.MeshStandardMaterial({
-            map: this.texture || null,
+        this.group = new THREE.Group();
+        scene.add(this.group);
+
+        // Materiales del árbol
+        this.foliageMaterial = new THREE.MeshStandardMaterial({
+            map: foliageTexture,
             color: 0x2e8b57,
             roughness: 0.8,
-            metalness: 0.1,
             flatShading: true
         });
-        this.createFoliage();
-        this.createTrunk();
-    }
-    createFoliage() {
-        const geometry = new THREE.SphereGeometry(1, 32, 32);
-        const capas = 5;
-        const esferasPorCapa = 22;
-        const radioBase = 1.8;
-        for (let j = 0; j < capas; j++) {
-            const altura = 1.2 + j * 0.55;
-            const radio = radioBase - j * 0.25;
-            for (let i = 0; i < esferasPorCapa; i++) {
-                const mesh = new THREE.Mesh(geometry, this.material);
-                mesh.scale.set(0.32, 0.32, 0.32);
-                const angle = (i / esferasPorCapa) * Math.PI * 2;
-                const x = Math.cos(angle) * (radio + Math.random() * 0.2 - 0.1);
-                const y = altura + (Math.random() * 0.2 - 0.1);
-                const z = Math.sin(angle) * (radio + Math.random() * 0.2 - 0.1);
-                mesh.position.set(x, y, z);
-                this.scene.add(mesh);
-                this.meshes.push(mesh);
-            }
-        }
-        const punta = new THREE.Mesh(geometry, this.material);
-        punta.scale.set(0.28, 0.28, 0.28);
-        punta.position.set(0, 1.2 + capas * 0.55, 0);
-        this.scene.add(punta);
-        this.meshes.push(punta);
-    }
-    createTrunk() {
-        const troncoMaterial = new THREE.MeshStandardMaterial({
+
+        this.trunkMaterial = new THREE.MeshStandardMaterial({
+            map: trunkTexture,
             color: 0x8B5A2B,
             roughness: 1,
             flatShading: true
         });
-        const segmentosTronco = 5;
-        const alturaCilindro = 0.7;
-        const radioBase = 0.35;
-        for (let t = 0; t < segmentosTronco; t++) {
-            const radioInferior = radioBase * (1 - (t * 0.08));
-            const radioSuperior = radioBase * (1 - ((t + 1) * 0.08));
-            const troncoGeo = new THREE.CylinderGeometry(
-                radioSuperior,
-                radioInferior,
-                alturaCilindro,
-                16
-            );
-            const tronco = new THREE.Mesh(troncoGeo, troncoMaterial);
-            tronco.position.set(0, (alturaCilindro / 2) + (t * alturaCilindro) - 1, 0);
-            this.scene.add(tronco);
-            this.meshes.push(tronco);
+
+        this.createTree();
+    }
+
+    createTree() {
+        this.createFoliage();
+        this.createTrunk();
+    }
+
+    createFoliage() {
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        
+        // Configuración simplificada
+        const layers = 5;
+        const spheresPerLayer = 22;
+        const baseRadius = 1.8;
+
+        // Crear capas de follaje
+        for (let layer = 0; layer < layers; layer++) {
+            const height = 1.2 + layer * 0.55;
+            const radius = baseRadius - layer * 0.25;
+            
+            for (let i = 0; i < spheresPerLayer; i++) {
+                const mesh = new THREE.Mesh(geometry, this.foliageMaterial);
+                mesh.scale.set(0.32, 0.32, 0.32);
+                
+                // Posición circular con variación aleatoria
+                const angle = (i / spheresPerLayer) * Math.PI * 2;
+                const x = Math.cos(angle) * (radius + Math.random() * 0.2 - 0.1);
+                const y = height + (Math.random() * 0.2 - 0.1);
+                const z = Math.sin(angle) * (radius + Math.random() * 0.2 - 0.1);
+                
+                mesh.position.set(x, y, z);
+                this.group.add(mesh);
+            }
+        }
+
+        // Puntita del árbol
+        const top = new THREE.Mesh(geometry, this.foliageMaterial);
+        top.scale.set(0.28, 0.28, 0.28);
+        top.position.set(0, 1.2 + layers * 0.55, 0);
+        this.group.add(top);
+    }
+
+    createTrunk() {
+        const segments = 5;
+        const segmentHeight = 0.7;
+        const baseRadius = 0.35;
+
+        // Crear tronco escalonado
+        for (let i = 0; i < segments; i++) {
+            const bottomRadius = baseRadius * (1 - (i * 0.08));
+            const topRadius = baseRadius * (1 - ((i + 1) * 0.08));
+            
+            const trunkGeo = new THREE.CylinderGeometry(topRadius, bottomRadius, segmentHeight, 16);
+            const trunk = new THREE.Mesh(trunkGeo, this.trunkMaterial);
+            
+            trunk.position.set(0, (segmentHeight / 2) + (i * segmentHeight) - 1, 0);
+            this.group.add(trunk);
         }
     }
-    updateTexture(newTexture) {
-        this.texture = newTexture;
-        this.material.map = newTexture;
-        this.material.needsUpdate = true;
-    }
+
     animate() {
-        this.meshes.forEach(m => {
-            m.rotation.y += 0.002;
-        });
+        this.group.rotation.y += 0.002;
     }
+
     dispose() {
-        this.meshes.forEach(m => this.scene.remove(m));
-        this.meshes = [];
+        this.scene.remove(this.group);
     }
 }
 
+// Aplicación principal simplificada
 class TreeApp {
     constructor() {
-        this.canvas = document.getElementById("lienzo");
-        this.sceneManager = null;
-        this.tree = null;
-        this.lighting = null;
-        this.textureLoader = null;
-        this.init();
+        const canvas = document.getElementById("lienzo");
+        const textureLoader = new TextureLoader();
+        
+        // Configurar escena e iluminación
+        this.sceneManager = new SceneManager(canvas);
+        new Lighting(this.sceneManager.scene);
+        
+        // Cargar texturas y crear árbol
+        textureLoader.load('./textura/t1.png', (foliageTexture) => {
+            textureLoader.load('./textura/t2.png', (trunkTexture) => {
+                this.tree = new Tree(this.sceneManager.scene, foliageTexture, trunkTexture);
+                this.startAnimation();
+            });
+        });
     }
-    init() {
-        this.setupSceneManager();
-        this.setupLighting();
-        this.setupTextureLoader();
-        this.loadTree();
-    }
-    setupSceneManager() {
-        this.sceneManager = new SceneManager(this.canvas);
-    }
-    setupLighting() {
-        this.lighting = new Lighting(this.sceneManager.getScene());
-    }
-    setupTextureLoader() {
-        this.textureLoader = new TextureLoader();
-    }
-    loadTree() {
-        const texturePath = './textura/t1.png';
-        this.textureLoader.loadTexture(
-            texturePath,
-            (texture) => this.createTree(texture),
-            () => this.createTreeWithFallback()
-        );
-    }
-    createTree(texture) {
-        this.tree = new Tree(this.sceneManager.getScene(), texture);
-        this.startAnimation();
-    }
-    createTreeWithFallback() {
-        this.tree = new Tree(this.sceneManager.getScene(), null);
-        this.startAnimation();
-    }
+
     startAnimation() {
         this.sceneManager.startAnimation(() => {
             if (this.tree) this.tree.animate();
         });
     }
-    updateTreeTexture(path) {
-        this.textureLoader.loadTexture(path, (texture) => {
-            if (this.tree) {
-                this.tree.updateTexture(texture);
-            }
-        });
-    }
+
     dispose() {
         if (this.tree) this.tree.dispose();
-        if (this.lighting) this.lighting.dispose();
         if (this.sceneManager) this.sceneManager.dispose();
     }
 }
 
+// Inicializar la aplicación
 const app = new TreeApp();
+
+// Hacer disponible globalmente para control desde consola
 window.TreeApp = TreeApp;
