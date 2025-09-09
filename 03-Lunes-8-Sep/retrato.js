@@ -1,59 +1,119 @@
-console.log("Tercer ejercicio: Autorretrato estilo Mondrian irregular");
+const canvas = document.getElementById("lienzo");
+const ctx = canvas.getContext("2d");
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const ctx = canvas.getContext('2d');
-
-const piel = "#E0AA82";
+// Colores
+const piel = "#c19e83";
 const cabello = "#111111";
-const lentes = "#000000";
-const ojos = "#222222";
-const boca = "#C0392B";
-const camisa = "#3A86FF";
+const lentes = "#ffffff";
+const ojos = "#000000";
+const boca = "#ffa3a3";
+const camisa = "#670000";
 const fondo = "#FFFFFF";
-
-function rect(x, y, w, h, color) {
-  ctx.fillStyle = color;
-  ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = "#000000";
-  ctx.lineWidth = 6;
-  ctx.strokeRect(x, y, w, h);
-}
 
 function randomSize(min, max) {
   return min + Math.floor(Math.random() * (max - min));
 }
 
-const caraW = randomSize(180, 240);
-const caraH = randomSize(220, 280);
-const caraX = canvas.width/2 - caraW/2;
-const caraY = canvas.height/2 - caraH/2;
+function drawRect(r, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(r.x, r.y, r.w, r.h);
+  ctx.strokeStyle = "#000000";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(r.x, r.y, r.w, r.h);
+}
 
-for (let y=0; y<canvas.height; ) {
+// 1. Retícula irregular
+let grid = [];
+for (let y = 0; y < canvas.height; ) {
   let h = randomSize(40, 120);
-  for (let x=0; x<canvas.width; ) {
+  for (let x = 0; x < canvas.width; ) {
     let w = randomSize(40, 120);
-    rect(x, y, w, h, fondo);
+    grid.push({ x, y, w, h });
     x += w;
   }
   y += h;
 }
 
-rect(caraX - 80, caraY - 60, caraW+160, caraH+200, cabello);
-rect(caraX, caraY, caraW, caraH, piel);
+// 2. Zona del retrato
+const caraW = 200;
+const caraH = 260;
+const caraX = canvas.width / 2 - caraW / 2;
+const caraY = canvas.height / 2 - caraH / 2;
 
-let lentesW = caraW/3;
-let lentesH = caraH/6;
-rect(caraX + caraW/8, caraY + caraH/3, lentesW, lentesH, lentes);
-rect(caraX + caraW/2, caraY + caraH/3, lentesW, lentesH, lentes);
+// 3. Pintar cada celda
+for (let r of grid) {
+  let color = fondo;
 
-rect(caraX + caraW/8 + 15, caraY + caraH/3 + 15, 20, 20, ojos);
-rect(caraX + caraW/2 + 15, caraY + caraH/3 + 15, 20, 20, ojos);
+  // Cara
+  if (
+    r.x + r.w > caraX &&
+    r.x < caraX + caraW &&
+    r.y + r.h > caraY &&
+    r.y < caraY + caraH
+  ) {
+    color = piel;
+  }
 
-rect(caraX + caraW/2 - 15, caraY + caraH/2, 30, 40, "#8A5A3A");
+  // Cabello general arriba
+  if (
+    r.y + r.h < caraY + caraH / 4 &&
+    r.x + r.w > caraX - 40 &&
+    r.x < caraX + caraW + 40
+  ) {
+    color = cabello;
+  }
 
-rect(caraX + caraW/2 - 40, caraY + caraH/2 + 70, 80, 25, boca);
+  // **Cabello extra**: si está justo al lado de la cara (izq/der/arriba)
+  if (
+    (r.x + r.w <= caraX && r.y + r.h > caraY && r.y < caraY + caraH) || // lado izquierdo
+    (r.x >= caraX + caraW && r.y + r.h > caraY && r.y < caraY + caraH) || // lado derecho
+    (r.y + r.h <= caraY && r.x + r.w > caraX && r.x < caraX + caraW) // arriba
+  ) {
+    color = cabello;
+  }
 
-rect(caraX + caraW/2 - 40, caraY + caraH, 80, 60, piel);
+  // Camisa
+  if (
+    r.y > caraY + caraH &&
+    r.y < caraY + caraH + 160 &&
+    r.x + r.w > caraX - 60 &&
+    r.x < caraX + caraW + 60
+  ) {
+    color = camisa;
+  }
 
-rect(caraX - 60, caraY + caraH + 60, caraW+120, 160, camisa);
+  // Lentes
+  if (
+    r.y > caraY + caraH / 3 &&
+    r.y < caraY + caraH / 2 &&
+    ((r.x > caraX + caraW / 8 && r.x < caraX + caraW / 2.5) ||
+      (r.x > caraX + caraW / 2 && r.x < caraX + caraW * 0.85))
+  ) {
+    color = lentes;
+  }
+
+  // Ojos
+  if (
+    r.y > caraY + caraH / 3 + 10 &&
+    r.y < caraY + caraH / 2 &&
+    ((r.x > caraX + caraW / 4 && r.x < caraX + caraW / 3) ||
+      (r.x > caraX + caraW * 0.65 && r.x < caraX + caraW * 0.75))
+  ) {
+    color = ojos;
+  }
+
+  // Boca
+  if (
+    r.y > caraY + caraH * 0.7 &&
+    r.y < caraY + caraH * 0.85 &&
+    r.x > caraX + caraW / 3 &&
+    r.x < caraX + caraW * 0.66
+  ) {
+    color = boca;
+  }
+
+  drawRect(r, color);
+}
