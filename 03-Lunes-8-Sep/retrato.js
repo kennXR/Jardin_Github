@@ -1,5 +1,3 @@
-const canvas = document.getElementById("lienzo");
-
 console.log("Tercer ejercicio: Autorretrato estilo Mondrian irregular");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
