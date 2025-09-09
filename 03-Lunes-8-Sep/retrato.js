@@ -12,6 +12,7 @@ const ojos = "#000000";
 const boca = "#ffa3a3";
 const camisa = "#670000";
 const fondo = "#FFFFFF";
+const fondoAzul = "#b3d9ff"; // azul pastel
 
 function randomSize(min, max) {
   return min + Math.floor(Math.random() * (max - min));
@@ -43,9 +44,14 @@ const caraH = 260;
 const caraX = canvas.width / 2 - caraW / 2;
 const caraY = canvas.height / 2 - caraH / 2;
 
+// Márgenes para el cabello
+const margenCabelloArriba = 100; // límite hacia arriba
+const margenCabello = 80;        // extensión hacia los lados
+
 // 3. Pintar cada celda
 for (let r of grid) {
-  let color = fondo;
+  // 👇 Fondo aleatorio: 70% blanco, 30% azul pastel
+  let color = Math.random() < 0.3 ? fondoAzul : fondo;
 
   // Cara
   if (
@@ -57,20 +63,27 @@ for (let r of grid) {
     color = piel;
   }
 
-  // Cabello general arriba
+  // Cabello general arriba (con límite)
   if (
     r.y + r.h < caraY + caraH / 4 &&
+    r.y + r.h > caraY - margenCabelloArriba &&
     r.x + r.w > caraX - 40 &&
     r.x < caraX + caraW + 40
   ) {
     color = cabello;
   }
 
-  // **Cabello extra**: si está justo al lado de la cara (izq/der/arriba)
+  // Cabello a los lados (con límite)
   if (
-    (r.x + r.w <= caraX && r.y + r.h > caraY && r.y < caraY + caraH) || // lado izquierdo
-    (r.x >= caraX + caraW && r.y + r.h > caraY && r.y < caraY + caraH) || // lado derecho
-    (r.y + r.h <= caraY && r.x + r.w > caraX && r.x < caraX + caraW) // arriba
+    // lado izquierdo
+    (r.x + r.w <= caraX &&
+     r.x + r.w > caraX - margenCabello &&
+     r.y + r.h > caraY && r.y < caraY + caraH) ||
+
+    // lado derecho
+    (r.x >= caraX + caraW &&
+     r.x < caraX + caraW + margenCabello &&
+     r.y + r.h > caraY && r.y < caraY + caraH)
   ) {
     color = cabello;
   }
