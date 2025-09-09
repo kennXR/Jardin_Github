@@ -1,105 +1,61 @@
 const canvas = document.getElementById("lienzo");
 
-console.log("Tercer ejercicio: Autorretrato");
+console.log("Tercer ejercicio: Autorretrato estilo Mondrian irregular");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-console.log(canvas);
-
 const ctx = canvas.getContext('2d');
 
-const W = canvas.width;
-const H = canvas.height;
-const cx = W / 2;
-const cy = H / 2;
-const u  = Math.min(W, H) / 12;
-
-const piel = "#A47148";
+const piel = "#E0AA82";
 const cabello = "#111111";
-const marco = "#000000";
+const lentes = "#000000";
+const ojos = "#222222";
+const boca = "#C0392B";
 const camisa = "#3A86FF";
+const fondo = "#FFFFFF";
 
-ctx.fillStyle = "#F5F5F5";
-ctx.fillRect(0, 0, W, H);
+function rect(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = "#000000";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(x, y, w, h);
+}
 
-ctx.fillStyle = piel;
-ctx.fillRect(cx - 0.7*u, cy + 2.2*u, 1.4*u, 1.2*u);
+function randomSize(min, max) {
+  return min + Math.floor(Math.random() * (max - min));
+}
 
-ctx.fillStyle = camisa;
-ctx.fillRect(cx - 3.2*u, cy + 3.2*u, 6.4*u, 3.0*u);
+const caraW = randomSize(180, 240);
+const caraH = randomSize(220, 280);
+const caraX = canvas.width/2 - caraW/2;
+const caraY = canvas.height/2 - caraH/2;
 
-ctx.beginPath();
-ctx.arc(cx, cy, 2.7*u, 0, Math.PI*2);
-ctx.fillStyle = piel;
-ctx.fill();
+for (let y=0; y<canvas.height; ) {
+  let h = randomSize(40, 120);
+  for (let x=0; x<canvas.width; ) {
+    let w = randomSize(40, 120);
+    rect(x, y, w, h, fondo);
+    x += w;
+  }
+  y += h;
+}
 
-ctx.beginPath();
-ctx.arc(cx - 2.7*u, cy + 0.2*u, 0.55*u, 0, Math.PI*2);
-ctx.arc(cx + 2.7*u, cy + 0.2*u, 0.55*u, 0, Math.PI*2);
-ctx.fillStyle = piel;
-ctx.fill();
+rect(caraX - 80, caraY - 60, caraW+160, caraH+200, cabello);
+rect(caraX, caraY, caraW, caraH, piel);
 
-ctx.beginPath();
-ctx.moveTo(cx - 3.2*u, cy - 0.3*u);
-ctx.arc(cx, cy - 0.3*u, 3.2*u, Math.PI, 0);
-ctx.lineTo(cx + 3.2*u, cy - 0.3*u);
-ctx.closePath();
-ctx.fillStyle = cabello;
-ctx.fill();
+let lentesW = caraW/3;
+let lentesH = caraH/6;
+rect(caraX + caraW/8, caraY + caraH/3, lentesW, lentesH, lentes);
+rect(caraX + caraW/2, caraY + caraH/3, lentesW, lentesH, lentes);
 
-ctx.beginPath();
-ctx.moveTo(cx - 2.8*u, cy - 0.4*u);
-ctx.lineTo(cx - 4.0*u, cy + 2.2*u);
-ctx.lineTo(cx - 2.2*u, cy + 2.2*u);
-ctx.closePath();
-ctx.fillStyle = cabello;
-ctx.fill();
+rect(caraX + caraW/8 + 15, caraY + caraH/3 + 15, 20, 20, ojos);
+rect(caraX + caraW/2 + 15, caraY + caraH/3 + 15, 20, 20, ojos);
 
-ctx.beginPath();
-ctx.moveTo(cx + 2.8*u, cy - 0.4*u);
-ctx.lineTo(cx + 4.0*u, cy + 2.2*u);
-ctx.lineTo(cx + 2.2*u, cy + 2.2*u);
-ctx.closePath();
-ctx.fillStyle = cabello;
-ctx.fill();
+rect(caraX + caraW/2 - 15, caraY + caraH/2, 30, 40, "#8A5A3A");
 
-ctx.lineWidth = Math.max(2, u*0.12);
-ctx.strokeStyle = marco;
-const anchoLente = 2.0*u;
-const altoLente  = 1.2*u;
-const sepLentes  = 0.5*u;
+rect(caraX + caraW/2 - 40, caraY + caraH/2 + 70, 80, 25, boca);
 
-ctx.strokeRect(cx - sepLentes/2 - anchoLente, cy - 0.2*u - altoLente/2, anchoLente, altoLente);
-ctx.strokeRect(cx + sepLentes/2,             cy - 0.2*u - altoLente/2, anchoLente, altoLente);
+rect(caraX + caraW/2 - 40, caraY + caraH, 80, 60, piel);
 
-ctx.beginPath();
-ctx.moveTo(cx - sepLentes/2, cy - 0.2*u);
-ctx.lineTo(cx + sepLentes/2, cy - 0.2*u);
-ctx.stroke();
-
-ctx.beginPath();
-ctx.moveTo(cx - sepLentes/2 - anchoLente, cy - 0.2*u);
-ctx.lineTo(cx - sepLentes/2 - anchoLente - 0.7*u, cy - 0.3*u);
-ctx.moveTo(cx + sepLentes/2 + anchoLente, cy - 0.2*u);
-ctx.lineTo(cx + sepLentes/2 + anchoLente + 0.7*u, cy - 0.3*u);
-ctx.stroke();
-
-ctx.fillStyle = "#222";
-ctx.beginPath();
-ctx.arc(cx - (sepLentes/2 + anchoLente/2), cy - 0.15*u, 0.18*u, 0, Math.PI*2);
-ctx.arc(cx + (sepLentes/2 + anchoLente/2), cy - 0.15*u, 0.18*u, 0, Math.PI*2);
-ctx.fill();
-
-ctx.beginPath();
-ctx.moveTo(cx, cy + 0.1*u);
-ctx.lineTo(cx - 0.25*u, cy + 0.7*u);
-ctx.lineTo(cx + 0.25*u, cy + 0.7*u);
-ctx.closePath();
-ctx.fillStyle = "#8A5A3A";
-ctx.fill();
-
-ctx.beginPath();
-ctx.arc(cx, cy + 1.3*u, 0.7*u, 0.1*Math.PI, 0.9*Math.PI);
-ctx.lineWidth = Math.max(2, u*0.1);
-ctx.strokeStyle = "#7A2E2E";
-ctx.stroke();
+rect(caraX - 60, caraY + caraH + 60, caraW+120, 160, camisa);
