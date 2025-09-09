@@ -7,7 +7,7 @@
 body {
     overflow: hidden;
     font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, #670000 0%, #0d0102 100%);
+    
 }
 
 #lienzo {
@@ -18,4 +18,5 @@ body {
     height: 100%;
     z-index: 1;
     pointer-events: none;
+    background: linear-gradient(to bottom, #670000 0%, #0d0102 100%);
 }
