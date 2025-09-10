@@ -1,5 +1,4 @@
 const canvas = document.getElementById("lienzo");
-console.log(canvas);
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
@@ -9,16 +8,37 @@ const W = canvas.width;
 const H = canvas.height;
 
 
-ctx.fillStyle = "#ffffff";
-
-
-
-ctx.strokeStyle = "blue";
-ctx.lineWidth = 2;
-
+const lines = [];
 for (let y = 0; y < H; y += 20) {
-  ctx.beginPath();
-  ctx.moveTo(0, y);
-  ctx.lineTo(W, y);
-  ctx.stroke();
+  lines.push({
+    y: y,
+    baseWidth: 2 + Math.random() * 3,   // grosor base
+    phase: Math.random() * Math.PI * 2, // fase para animación
+    speed: 0.02 + Math.random() * 0.02  // velocidad
+  });
 }
+
+function draw() {
+  // Clear canvas with transparent background to show CSS gradient
+  ctx.clearRect(0, 0, W, H);
+
+  ctx.strokeStyle = "#ffffff";
+
+  lines.forEach(line => {
+
+    const width = line.baseWidth + Math.sin(line.phase) * 3;
+    ctx.lineWidth = Math.max(0.5, width);
+
+    ctx.beginPath();
+    ctx.moveTo(0, line.y);
+    ctx.lineTo(W, line.y);
+    ctx.stroke();
+
+  
+    line.phase += line.speed;
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
