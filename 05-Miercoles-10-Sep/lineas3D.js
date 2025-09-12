@@ -20,13 +20,13 @@ const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
 renderer.setSize(W, H);
 renderer.setClearColor(0x000000);
 
-// 5. Luces
-const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-scene.add(ambientLight);
+// 5. Luces (no necesarias para MeshBasicMaterial)
+// const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+// scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-directionalLight.position.set(0, 1, 0);
-scene.add(directionalLight);
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+// directionalLight.position.set(0, 1, 0);
+// scene.add(directionalLight);
 
 // 6. Crear "líneas" como cajas
 const lines = [];
@@ -38,9 +38,9 @@ for (let y = 0; y < H; y += 30) {
   const vy = 0.5 + Math.random() * 1.0;
 
   // Geometría + material básico
-  const geometry = new THREE.BoxGeometry(100, baseWidth, 20 + Math.random() * 30);
+  const geometry = new THREE.BoxGeometry(W, baseWidth, 20 + Math.random() * 30);
   const material = new THREE.MeshBasicMaterial({
-    color: new THREE.Color().setHSL(Math.random(), 1, 0.5)
+    color: new THREE.Color().setHSL(Math.random(), 1, 0.8)
   });
 
   const box = new THREE.Mesh(geometry, material);
@@ -73,7 +73,7 @@ function animate() {
 
     // color dinámico (hue shift)
     const hue = (Date.now() * 0.05 + line.phase * 50) % 360;
-    line.material.color.setHSL(hue / 360, 1, 0.5);
+    line.material.color.setHSL(hue / 360, 1, 0.8);
   });
 
   renderer.render(scene, camera);
