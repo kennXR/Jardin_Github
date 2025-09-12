@@ -7,7 +7,6 @@ canvas.height = window.innerHeight;
 const W = canvas.width;
 const H = canvas.height;
 
-// Crear líneas con posición, grosor y velocidad
 const lines = [];
 for (let y = 0; y < H; y += 20) {
   lines.push({
