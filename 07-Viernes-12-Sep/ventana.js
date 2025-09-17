@@ -1,19 +1,37 @@
-console.log("Septimo ejercicio: Ayuste de ventanas");
-console.log("THREE:", THREE);
+console.log("Ejercicio: Ajuste de ventanas");
 
-// 1. Canvas
 const canvas = document.getElementById("lienzo");
-const W = window.innerWidth;
-const H = window.innerHeight;
-
-// 2. Escena
+const renderer = new THREE.WebGLRenderer({canvas});
 const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
 
-// 3. Cámara
-const camera = new THREE.PerspectiveCamera(75, W / H, 0.1, 1000);
-camera.position.z = 200;
+const loader = new THREE.TextureLoader();
+const textures = [
+  loader.load("./tex/t1.png"),
+  loader.load("./tex/t2.png"),
+  loader.load("./tex/t3.png")
+];
 
-// 4. Renderer
-const renderer = new THREE.WebGLRenderer({ canvas: canvas });
-renderer.setSize(W, H);
-renderer.setClearColor(0x000000);
+const material = new THREE.MeshMatcapMaterial();
+const mesh = new THREE.Mesh(new THREE.TorusKnotGeometry(1, 0.3, 100, 16), material);
+scene.add(mesh);
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  material.matcap = w < 600 ? textures[0] : w < 1000 ? textures[1] : textures[2];
+}
+window.addEventListener("resize", resize);
+resize();
+
+function animate() {
+  requestAnimationFrame(animate);
+  mesh.rotation.x += 0.01;
+  mesh.rotation.y += 0.01;
+  renderer.render(scene, camera);
+}
+animate();
+
