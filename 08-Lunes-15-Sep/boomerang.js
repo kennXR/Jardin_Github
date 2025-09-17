@@ -1,35 +1,34 @@
-console.log("Tarea");
+console.log("Octavo ejercicio: Boomerang");
 console.log(gsap);
 
-window.addEventListener("mousedown", function(){
+const b = document.querySelector(".boomerang");
 
-    gsap.to(".sol", {
-        y: -200,
-        duration: 3,
-        backgroundColor: "yellow",
-        ease: "power1.out",
-        onComplete: function() {
-
-            gsap.to(".sol", {
-                y: 0,
-                duration: 3,
-                backgroundColor: "#7e8700",
-                ease: "power1.in"
-            });
-        }
-    });
-
-
-    gsap.to(".pasto", {
-        duration: 6,      
-        backgroundColor: "#004d04",
-        ease: "none"          
-    });
-
-
-    gsap.to(".cielo", {
-        duration: 7,      
-        backgroundColor: "#005e87",
-        ease: "none"          
-    });
+window.addEventListener("click", () => {
+  // Resetear posición inicial
+  gsap.set(b, { x: 0, y: 0, rotation: 0 });
+  
+  // Crear timeline para animación de boomerang
+  const tl = gsap.timeline();
+  
+  tl.to(b, {
+    duration: 1,
+    x: 200,
+    y: -100,
+    rotation: 180,
+    ease: "power2.out"
+  })
+  .to(b, {
+    duration: 1,
+    x: 400,
+    y: -50,
+    rotation: 360,
+    ease: "power2.in"
+  })
+  .to(b, {
+    duration: 1,
+    x: 0,
+    y: 0,
+    rotation: 540,
+    ease: "power2.inOut"
+  });
 });
