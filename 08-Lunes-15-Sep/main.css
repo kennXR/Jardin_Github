@@ -2,15 +2,38 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+  
+  body {
+    height: 100vh;
+    width: 100vw;
+    background: black;
     overflow: hidden;
-}
-
-.boomerang {
-    width: 120px;
-    height: 40px;
-    background: orange;
-    clip-path: polygon(0 30%, 60% 0, 100% 50%, 60% 100%, 0 70%, 25% 50%);
+    position: relative;
+  }
+  
+  .boomerang {
     position: absolute;
-    bottom: 20vh;
-    left: 10vw;
+    width: 80px;
+    height: 80px;
+    background: orange;
+    top: 50%;
+    left: 5vw;
+    transform: translateY(-50%);
+  
+    /* Forma de boomerang tipo "L" con borde curvo */
+    clip-path: polygon(
+      0% 30%,   /* Parte inferior del brazo vertical */
+      30% 0%,   /* Esquina interna (superior izquierda) */
+      40% 10%,  /* Curva interna superior */
+      10% 40%,  /* Curva interna inferior */
+      0% 60%,   /* Parte superior del brazo vertical */
+      20% 100%, /* Extremo del brazo horizontal */
+      100% 80%, /* Final del brazo horizontal */
+      80% 60%,  /* Parte inferior del brazo horizontal */
+      30% 90%,  /* Esquina inferior interna */
+      10% 70%   /* Vuelta hacia el centro */
+    );
+  
+    transform-origin: center center;
   }
