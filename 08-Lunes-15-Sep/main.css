@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/*ctx.ellipse(x, y, radiousX, radiousY, rotation, startAngle, endAngle)*/
+
+.cielo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #90f2ff;
+    /*#68d2ff;*/
+}
+.sol {
+    position: absolute;
+    top: 400px;
+    left: 0px;
+    width: 100px;   
+    height: 100px;
+    background-color: #fffcad;
+    border-radius: 50%;
+}
+
+.pasto {
+    position: absolute;
+    top: 500px;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background-color: #c0f9c3;
+}
+
