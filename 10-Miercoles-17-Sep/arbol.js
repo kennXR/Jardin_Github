@@ -24,8 +24,14 @@ class Escena {
 // Luces
 class Luces {
     constructor(escena) {
-        escena.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(5, 10, 5));
-        escena.add(new THREE.PointLight(0xffaa55, 0.6, 50).position.set(-4, 3, 4));
+        const luzDireccional = new THREE.DirectionalLight(0xffffff, 1.2);
+        luzDireccional.position.set(5, 10, 5);
+        escena.add(luzDireccional);
+
+        const luzPuntual = new THREE.PointLight(0xffaa55, 0.6, 50);
+        luzPuntual.position.set(-4, 3, 4);
+        escena.add(luzPuntual);
+
         escena.add(new THREE.AmbientLight(0x404040, 0.8));
     }
 }
