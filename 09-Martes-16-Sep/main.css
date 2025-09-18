@@ -16,5 +16,18 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
-    pointer-events: none;
+    pointer-events: auto;
+    background: black;
 }
+
+#rect {
+    width: 120px;
+    height: 60px;
+    background: rgb(178, 164, 255);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }

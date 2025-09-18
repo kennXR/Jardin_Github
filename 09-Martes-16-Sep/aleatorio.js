@@ -1,32 +1,20 @@
-const canvas = document.getElementById("lienzo");
-const ctx = canvas.getContext("2d");
+const rect = document.getElementById("rect");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const W = canvas.width;
-const H = canvas.height;
+rect.addEventListener("click", e => {
+  const W = window.innerWidth, H = window.innerHeight;
+  const rw = rect.offsetWidth, rh = rect.offsetHeight;
 
-let t = 0;
+  let x = Math.random() * (W - rw);
+  let y = Math.random() * (H - rh);
 
-function draw() {
-  t += 0.02;
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, W, H);
-
-  ctx.save();
-  ctx.translate(W / 2, H / 2);
-
-  for (let i = 0; i < 40; i++) {
-    let r = Math.max(5, i * 20 + Math.sin(t + i * 0.2) * 15);
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.strokeStyle = i % 2 === 0 ? "black" : "white";
-    ctx.lineWidth = 20;
-    ctx.stroke();
+  if (Math.abs(x - e.clientX) < 100 && Math.abs(y - e.clientY) < 100) {
+    x += (x > e.clientX ? 100 : -100);
+    y += (y > e.clientY ? 100 : -100);
   }
 
-  ctx.restore();
-  requestAnimationFrame(draw);
-}
-
-draw();
+  gsap.to(rect, {
+    x: Math.min(Math.max(0, x), W - rw),
+    y: Math.min(Math.max(0, y), H - rh),
+    duration: 0.6
+  });
+});
