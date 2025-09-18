@@ -48,17 +48,45 @@ class Arbol {
         this.colores = { follaje: 0x2e8b57, tronco: 0x8B5A2B };
         this.cambiado = false;
 
-        // Follaje (esferas)
+        this.crearFollaje();
+        this.crearTronco();
+    }
+
+    crearFollaje() {
         const esfera = new THREE.SphereGeometry(1, 32, 32);
-        for (let i = 0; i < 40; i++) {
-            const bola = new THREE.Mesh(esfera, this.matFollaje);
-            bola.scale.set(0.3, 0.3, 0.3);
-            bola.position.set(Math.random() * 2 - 1, 1 + Math.random() * 2, Math.random() * 2 - 1);
-            this.grupo.add(bola);
+        const capas = 5;
+        const esferasPorCapa = 20;
+        const radioBase = 1.6;
+
+        for (let capa = 0; capa < capas; capa++) {
+            const altura = 1 + capa * 0.5;
+            const radio = radioBase - capa * 0.25;
+
+            for (let i = 0; i < esferasPorCapa; i++) {
+                const angulo = (i / esferasPorCapa) * Math.PI * 2;
+                const x = Math.cos(angulo) * radio;
+                const y = altura;
+                const z = Math.sin(angulo) * radio;
+
+                const bola = new THREE.Mesh(esfera, this.matFollaje);
+                bola.scale.set(0.3, 0.3, 0.3);
+                bola.position.set(x, y, z);
+                this.grupo.add(bola);
+            }
         }
 
-        // Tronco (cilindro)
-        const tronco = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.35, 2, 16), this.matTronco);
+        // Esfera en la cima
+        const cima = new THREE.Mesh(esfera, this.matFollaje);
+        cima.scale.set(0.28, 0.28, 0.28);
+        cima.position.set(0, 1 + capas * 0.5, 0);
+        this.grupo.add(cima);
+    }
+
+    crearTronco() {
+        const tronco = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.3, 0.35, 2, 16),
+            this.matTronco
+        );
         tronco.position.y = 0;
         this.grupo.add(tronco);
     }
