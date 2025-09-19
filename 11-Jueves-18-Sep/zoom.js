@@ -72,6 +72,16 @@ loader.load('./textura/t1.png', f => {
 });
 
 // --- Zoom ---
-const initialZ = cam.position.z, minZ = 3.5;
-document.getElementById("zoomIn").onclick  = () => gsap.to(cam.position, { z: minZ, duration: 1, ease: "power2.out" });
-document.getElementById("zoomOut").onclick = () => gsap.to(cam.position, { z: initialZ, duration: 1, ease: "power2.out" });
+// --- Zoom ---
+const initialZ = cam.position.z;
+const minZ = 3.5;
+const maxZ = 12;
+
+document.getElementById("zoomIn").onclick = () => {
+  gsap.to(cam.position, { z: minZ, duration: 1, ease: "power2.out" });
+};
+
+document.getElementById("zoomOut").onclick = () => {
+  let targetZ = cam.position.z > initialZ ? initialZ : maxZ;
+  gsap.to(cam.position, { z: targetZ, duration: 1, ease: "power2.out" });
+};
