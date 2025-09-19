@@ -1,74 +1,194 @@
-console.log("Sesión: Líneas dinámicas 3D");
-console.log("THREE:", THREE);
+// Configuración de la escena 3D
+class SceneManager {
+  constructor(canvas) {
+      // Configurar escena básica
+      this.scene = new THREE.Scene();
+      this.scene.background = new THREE.Color(0xaadfff);
+      
+      // Configurar cámara
+      this.camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+      this.camera.position.set(0, 2, 8);
+      
+      // Configurar renderer
+      this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  }
 
-// 1. Canvas
-const canvas = document.getElementById("lienzo");
-const W = window.innerWidth;
-const H = window.innerHeight;
+  startAnimation(callback) {
+      const animate = () => {
+          requestAnimationFrame(animate);
+          callback();
+          this.renderer.render(this.scene, this.camera);
+      };
+      animate();
+  }
 
-// 2. Escena
-const scene = new THREE.Scene();
+  dispose() {
+      this.renderer.dispose();
+  }
+}
 
-// 3. Cámara
-const camera = new THREE.PerspectiveCamera(75, W / H, 0.1, 1000);
-camera.position.z = 200;
+// Configuración de iluminación
+class Lighting {
+  constructor(scene) {
+      this.scene = scene;
+      
+      // Luz principal desde arriba
+      const topLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      topLight.position.set(5, 10, 5);
+      scene.add(topLight);
+      
+      // Luz cálida lateral
+      const warmLight = new THREE.PointLight(0xffaa55, 0.6, 50);
+      warmLight.position.set(-4, 3, 4);
+      scene.add(warmLight);
+      
+      // Luz ambiente general
+      const ambient = new THREE.AmbientLight(0x404040, 0.8);
+      scene.add(ambient);
+  }
 
-// 4. Renderer
-const renderer = new THREE.WebGLRenderer({ canvas: canvas });
-renderer.setSize(W, H);
-renderer.setClearColor(0x000000);
+  dispose() {
+      // Las luces se limpian automáticamente al eliminar la escena
+  }
+}
 
-// 5. Crear líneas como cajas
-const lines = [];
-
-for (let y = 0; y < H; y += 40) {
-  const baseWidth = 8 + Math.random() * 12;
-  const phase = Math.random() * Math.PI * 2;
-  const speed = 0.01 + Math.random() * 0.02;
-  const vy = 0.3 + Math.random() * 0.7;
-
-  // Geometría
-  const geometry = new THREE.BoxGeometry(W * 0.8, baseWidth, 30);
+// Cargador de texturas simplificado
+class TextureLoader {
+  constructor() {
+      this.loader = new THREE.TextureLoader();
+  }
   
-  // Material
-  const material = new THREE.MeshBasicMaterial({
-    color: new THREE.Color().setHSL(Math.random(), 1, 0.7)
-  });
-
-  // Mesh
-  const box = new THREE.Mesh(geometry, material);
-  box.position.set(0, y - H/2, 0);
-
-  scene.add(box);
-  lines.push({ box, baseWidth, phase, speed, vy, material });
+  load(path, onLoad) {
+      this.loader.load(path, onLoad, undefined, () => console.warn(`No se pudo cargar: ${path}`));
+  }
 }
 
-console.log(`Creadas ${lines.length} líneas`);
+// Creación del árbol 3D
+class Tree {
+  constructor(scene, foliageTexture, trunkTexture) {
+      this.scene = scene;
+      this.group = new THREE.Group();
+      scene.add(this.group);
 
-// 6. Animación
-function animate() {
-  requestAnimationFrame(animate);
+      // Materiales del árbol
+      this.foliageMaterial = new THREE.MeshStandardMaterial({
+          map: foliageTexture,
+          color: 0x2e8b57,
+          roughness: 0.8,
+          flatShading: true
+      });
 
-  lines.forEach(line => {
-    // Grosor variable
-    const width = line.baseWidth + Math.sin(line.phase) * 8;
-    line.box.scale.y = Math.max(0.2, width / line.baseWidth);
+      this.trunkMaterial = new THREE.MeshStandardMaterial({
+          map: trunkTexture,
+          color: 0x8B5A2B,
+          roughness: 1,
+          flatShading: true
+      });
 
-    // Movimiento vertical
-    line.box.position.y += line.vy;
-    if (line.box.position.y > H/2 + 50) {
-      line.box.position.y = -H/2 - 50;
-    }
+      this.createTree();
+  }
 
-    // Actualizar fase
-    line.phase += line.speed;
+  createTree() {
+      this.createFoliage();
+      this.createTrunk();
+  }
 
-    // Color dinámico
-    const hue = (Date.now() * 0.03 + line.phase * 30) % 360;
-    line.material.color.setHSL(hue / 360, 1, 0.7);
-  });
+  createFoliage() {
+      const geometry = new THREE.SphereGeometry(1, 32, 32);
+      
+      // Configuración simplificada
+      const layers = 5;
+      const spheresPerLayer = 22;
+      const baseRadius = 1.8;
 
-  renderer.render(scene, camera);
+      // Crear capas de follaje
+      for (let layer = 0; layer < layers; layer++) {
+          const height = 1.2 + layer * 0.55;
+          const radius = baseRadius - layer * 0.25;
+          
+          for (let i = 0; i < spheresPerLayer; i++) {
+              const mesh = new THREE.Mesh(geometry, this.foliageMaterial);
+              mesh.scale.set(0.32, 0.32, 0.32);
+              
+              // Posición circular con variación aleatoria
+              const angle = (i / spheresPerLayer) * Math.PI * 2;
+              const x = Math.cos(angle) * (radius + Math.random() * 0.2 - 0.1);
+              const y = height + (Math.random() * 0.2 - 0.1);
+              const z = Math.sin(angle) * (radius + Math.random() * 0.2 - 0.1);
+              
+              mesh.position.set(x, y, z);
+              this.group.add(mesh);
+          }
+      }
+
+      // Puntita del árbol
+      const top = new THREE.Mesh(geometry, this.foliageMaterial);
+      top.scale.set(0.28, 0.28, 0.28);
+      top.position.set(0, 1.2 + layers * 0.55, 0);
+      this.group.add(top);
+  }
+
+  createTrunk() {
+      const segments = 5;
+      const segmentHeight = 0.7;
+      const baseRadius = 0.35;
+
+      // Crear tronco escalonado
+      for (let i = 0; i < segments; i++) {
+          const bottomRadius = baseRadius * (1 - (i * 0.08));
+          const topRadius = baseRadius * (1 - ((i + 1) * 0.08));
+          
+          const trunkGeo = new THREE.CylinderGeometry(topRadius, bottomRadius, segmentHeight, 16);
+          const trunk = new THREE.Mesh(trunkGeo, this.trunkMaterial);
+          
+          trunk.position.set(0, (segmentHeight / 2) + (i * segmentHeight) - 1, 0);
+          this.group.add(trunk);
+      }
+  }
+
+  animate() {
+      this.group.rotation.y += 0.002;
+  }
+
+  dispose() {
+      this.scene.remove(this.group);
+  }
 }
 
-animate();
+// Aplicación principal simplificada
+class TreeApp {
+  constructor() {
+      const canvas = document.getElementById("lienzo");
+      const textureLoader = new TextureLoader();
+      
+      // Configurar escena e iluminación
+      this.sceneManager = new SceneManager(canvas);
+      new Lighting(this.sceneManager.scene);
+      
+      // Cargar texturas y crear árbol
+      textureLoader.load('./textura/t1.png', (foliageTexture) => {
+          textureLoader.load('./textura/t2.png', (trunkTexture) => {
+              this.tree = new Tree(this.sceneManager.scene, foliageTexture, trunkTexture);
+              this.startAnimation();
+          });
+      });
+  }
+
+  startAnimation() {
+      this.sceneManager.startAnimation(() => {
+          if (this.tree) this.tree.animate();
+      });
+  }
+
+  dispose() {
+      if (this.tree) this.tree.dispose();
+      if (this.sceneManager) this.sceneManager.dispose();
+  }
+}
+
+// Inicializar la aplicación
+const app = new TreeApp();
+
+// Hacer disponible globalmente para control desde consola
+window.TreeApp = TreeApp;

@@ -19,3 +19,18 @@ body {
     pointer-events: none;
     background: linear-gradient(to bottom, #670000 0%, #0d0102 100%);
 }
+
+#zoomIn, #zoomOut {
+    position: fixed;
+    top: 20px;
+    width: 100px;
+    height: 35px;
+    background: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  #zoomIn { left: 20px; }
+  #zoomOut { left: 130px; }
