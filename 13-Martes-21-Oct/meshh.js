@@ -18,7 +18,6 @@ window.addEventListener("resize", () => {
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(canvas.width, canvas.height);
-renderer.setClearColor("#88ccff"); // Azul claro
 
 // --- Cámara
 const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
@@ -27,6 +26,10 @@ camera.position.set(0, 0, 14); // Más alejada para la cúpula más grande
 // --- Textura
 const loader = new THREE.TextureLoader();
 const textura = loader.load("./tex/bubble2.png");
+
+// Fondo con textura
+const backgroundTexture = loader.load("./tex/fondo1.jpg");
+scene.background = backgroundTexture;
 
 // --- Cúpula de la medusa
 const domeGeo = new THREE.SphereGeometry(2.2, 64, 64, 0, Math.PI * 2, 0, Math.PI / 1.6);
