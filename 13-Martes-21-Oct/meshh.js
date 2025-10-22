@@ -18,7 +18,7 @@ window.addEventListener("resize", () => {
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(canvas.width, canvas.height);
-renderer.setClearColor("#0a0c2c");
+renderer.setClearColor("#88ccff"); // Azul claro
 
 // --- Cámara
 const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
@@ -90,8 +90,6 @@ for (let i = 0; i < numTentacles; i++) {
     opacity: 0.8,
     roughness: 0.2,
     metalness: 0.0,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.1,
   });
 
   const tentacle = new THREE.Mesh(tGeo, tMat);
