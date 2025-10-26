@@ -24,11 +24,13 @@ body {
     position: relative;
     width: 100%;
     height: 100vh;
+    max-width: 100vw;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     background: #000;
     overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Gradiente de fondo para la sección inferior
@@ -74,15 +76,18 @@ body {
    ============================================ */
 .titulo-principal {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(3.5rem, 9vw, 7rem);
+    font-size: clamp(4rem, 12vw, 10rem);
     font-weight: 700;
     text-align: center;
     color: white;
-    letter-spacing: 0.08em;
-    padding-top: 5vh;
-    margin-bottom: 8vh;
+    letter-spacing: 0.05em;
+    padding: 4vh 2% 0;
+    margin-bottom: 10vh;
     position: relative;
     z-index: 2;
+    line-height: 1.1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* ============================================
@@ -92,10 +97,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 90%;
+    width: 95%;
     max-width: 1600px;
     margin: 0 auto 12vh;
-    padding: 0 5%;
+    padding: 0 2%;
     position: relative;
     z-index: 2;
 }
@@ -110,6 +115,9 @@ body {
     color: white;
     text-transform: uppercase;
     flex: 0 0 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Navegación izquierda - "(ABOUT)" */
@@ -135,10 +143,11 @@ body {
    ============================================ */
 .seccion-titulo-folio {
     text-align: center;
-    padding: 0 5%;
+    padding: 0 2%;
     margin-bottom: 8vh;
     position: relative;
     z-index: 2;
+    max-width: 100%;
 }
 
 /* Parte "DESIGN" - en fuente monoespaciada */
@@ -172,7 +181,7 @@ body {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: white;
-    padding: 0 5% 2vh 5%;
+    padding: 0 2% 2vh;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -180,7 +189,9 @@ body {
     z-index: 2;
     line-height: 1.8;
     max-width: 900px;
+    width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 /* ============================================
