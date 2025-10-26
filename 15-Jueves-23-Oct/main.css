@@ -1,0 +1,258 @@
+/* ============================================
+   PORTAFOLIO - OLHA LAZARIEVA
+   
+   Diseño minimalista monocromático
+   ============================================ */
+
+/* ============================================
+   RESET Y ESTILOS GLOBALES
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #F5F5F5;
+    color: #000000;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.contenedor-principal {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 40px 60px 80px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 80px;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.nombre {
+    font-size: 32px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.numero {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.nav-links {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.nav-links span {
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.nav-links span:hover {
+    opacity: 0.5;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    color: #000000;
+    transition: opacity 0.3s;
+}
+
+.contact-btn:hover {
+    opacity: 0.5;
+}
+
+.contact-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+    margin-bottom: 100px;
+    flex: 1;
+}
+
+.hero-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-hero {
+    font-size: 120px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    letter-spacing: 0.02em;
+}
+
+.titulo-hero .linea1 {
+    display: block;
+}
+
+.titulo-hero .linea2 {
+    display: block;
+    padding-left: 60px;
+}
+
+.location {
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    margin-bottom: 60px;
+    margin-left: 60px;
+}
+
+.skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.skills-list div {
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.portrait {
+    max-width: 350px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(1);
+}
+
+/* ============================================
+   DESCRIPCIÓN FOOTER
+   ============================================ */
+.descripcion-footer {
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    margin-top: auto;
+    padding-top: 40px;
+    line-height: 1.6;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 1200px) {
+    .titulo-hero {
+        font-size: 90px;
+    }
+    
+    .titulo-hero .linea2 {
+        padding-left: 40px;
+    }
+    
+    .location {
+        margin-left: 40px;
+    }
+}
+
+@media (max-width: 968px) {
+    .hero {
+        grid-template-columns: 1fr;
+    }
+    
+    .titulo-hero {
+        font-size: 70px;
+    }
+    
+    .portrait {
+        max-width: 300px;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .contenedor-principal {
+        padding: 30px 30px 60px;
+    }
+    
+    .titulo-hero {
+        font-size: 50px;
+    }
+    
+    .titulo-hero .linea2 {
+        padding-left: 20px;
+    }
+    
+    .location {
+        margin-left: 20px;
+    }
+    
+    .nombre {
+        font-size: 24px;
+    }
+}
