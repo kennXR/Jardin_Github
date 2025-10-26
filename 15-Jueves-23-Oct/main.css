@@ -2,6 +2,7 @@
    PORTAFOLIO - OLHA LAZARIEVA
    
    Diseño minimalista monocromático
+   Viewport: 1440px x 750px (FIXED)
    ============================================ */
 
 /* ============================================
@@ -13,11 +14,16 @@
     box-sizing: border-box;
 }
 
+html, body {
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
     background: #F5F5F5;
     color: #000000;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -26,12 +32,12 @@ body {
    CONTENEDOR PRINCIPAL
    ============================================ */
 .contenedor-principal {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 40px 60px 80px;
-    min-height: 100vh;
+    width: 1440px;
+    height: 750px;
+    padding: 45px 60px 40px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 /* ============================================
@@ -41,7 +47,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 80px;
+    margin-bottom: 70px;
+    width: 100%;
 }
 
 .header-left {
@@ -50,30 +57,39 @@ body {
 }
 
 .nombre {
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 8px;
-    line-height: 1.2;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    display: flex;
+    flex-direction: column;
+}
+
+.nombre span {
+    display: block;
 }
 
 .numero {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
+    margin-top: 0;
 }
 
 .nav-links {
     display: flex;
-    gap: 24px;
+    gap: 35px;
     align-items: center;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .nav-links span {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     cursor: pointer;
     transition: opacity 0.3s;
 }
@@ -91,10 +107,10 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-decoration: none;
     color: #000000;
     transition: opacity 0.3s;
@@ -105,8 +121,8 @@ body {
 }
 
 .contact-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
 }
 
 /* ============================================
@@ -115,10 +131,11 @@ body {
 .hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 60px;
+    gap: 90px;
     align-items: start;
-    margin-bottom: 100px;
+    margin-bottom: 40px;
     flex: 1;
+    width: 100%;
 }
 
 .hero-left {
@@ -127,12 +144,12 @@ body {
 }
 
 .titulo-hero {
-    font-size: 120px;
+    font-size: 100px;
     font-weight: 700;
-    line-height: 1;
+    line-height: 0.92;
     text-transform: uppercase;
-    margin-bottom: 40px;
-    letter-spacing: 0.02em;
+    margin-bottom: 25px;
+    letter-spacing: -0.02em;
 }
 
 .titulo-hero .linea1 {
@@ -141,118 +158,62 @@ body {
 
 .titulo-hero .linea2 {
     display: block;
-    padding-left: 60px;
+    padding-left: 65px;
 }
 
 .location {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.3em;
-    margin-bottom: 60px;
-    margin-left: 60px;
+    letter-spacing: 0.4em;
+    margin-bottom: 75px;
+    margin-left: 65px;
+    margin-top: -8px;
 }
 
 .skills-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    margin-top: 10px;
 }
 
 .skills-list div {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
 }
 
 .hero-right {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: start;
+    position: relative;
 }
 
 .portrait {
-    max-width: 350px;
+    max-width: 290px;
     width: 100%;
     height: auto;
-    object-fit: contain;
+    object-fit: cover;
     filter: grayscale(1);
+    margin-top: 15px;
 }
 
 /* ============================================
    DESCRIPCIÓN FOOTER
    ============================================ */
 .descripcion-footer {
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-align: center;
     margin-top: auto;
-    padding-top: 40px;
-    line-height: 1.6;
-}
-
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
-@media (max-width: 1200px) {
-    .titulo-hero {
-        font-size: 90px;
-    }
-    
-    .titulo-hero .linea2 {
-        padding-left: 40px;
-    }
-    
-    .location {
-        margin-left: 40px;
-    }
-}
-
-@media (max-width: 968px) {
-    .hero {
-        grid-template-columns: 1fr;
-    }
-    
-    .titulo-hero {
-        font-size: 70px;
-    }
-    
-    .portrait {
-        max-width: 300px;
-    }
-    
-    .header {
-        flex-direction: column;
-        gap: 30px;
-    }
-    
-    .nav-links {
-        flex-wrap: wrap;
-        gap: 16px;
-    }
-}
-
-@media (max-width: 640px) {
-    .contenedor-principal {
-        padding: 30px 30px 60px;
-    }
-    
-    .titulo-hero {
-        font-size: 50px;
-    }
-    
-    .titulo-hero .linea2 {
-        padding-left: 20px;
-    }
-    
-    .location {
-        margin-left: 20px;
-    }
-    
-    .nombre {
-        font-size: 24px;
-    }
+    padding-top: 25px;
+    line-height: 1.7;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
