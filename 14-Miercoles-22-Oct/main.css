@@ -1,3 +1,6 @@
+/* ============================================
+   RESET Y ESTILOS GLOBALES
+   ============================================ */
 * {
     margin: 0;
     padding: 0;
@@ -5,17 +8,199 @@
 }
 
 body {
-    overflow: hidden;
-    font-family: Arial, sans-serif;
+    font-family: 'Space Mono', monospace, sans-serif;
+    overflow-x: hidden;
+    background: #000;
+    height: 100vh;
+    color: white;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-#lienzo {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.contenedor-principal {
+    position: relative;
     width: 100%;
-    height: 100%;
-    z-index: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: #000;
+    overflow: hidden;
+}
+
+/* Gradiente de fondo para la sección inferior
+   Va de gris claro a la izquierda a negro a la derecha */
+.contenedor-principal::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 27%;
+    background: linear-gradient(to right, 
+        #bfbfbf 0%,
+        #999 15%,
+        #777 30%,
+        #555 50%,
+        #404040 70%,
+        #2a2a2a 85%,
+        #151515 100%
+    );
+    z-index: 0;
+}
+
+/* Textura de ruido/granulado sobre el gradiente inferior
+   Crea el efecto de textura visual en el área de gradiente */
+.contenedor-principal::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 27%;
+    background-image: 
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+    background-size: 4px 4px;
     pointer-events: none;
-    background: linear-gradient(to bottom, #670000 0%, #0d0102 100%);
+    z-index: 1;
+    mix-blend-mode: overlay;
+}
+
+/* ============================================
+   TÍTULO PRINCIPAL
+   ============================================ */
+.titulo-principal {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    font-weight: 700;
+    text-align: center;
+    color: white;
+    letter-spacing: 0.08em;
+    padding-top: 5vh;
+    margin-bottom: 8vh;
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================
+   SECCIÓN DE NAVEGACIÓN
+   ============================================ */
+.seccion-navegacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 1600px;
+    margin: 0 auto 12vh;
+    padding: 0 5%;
+    position: relative;
+    z-index: 2;
+}
+
+/* Estilos base para los elementos de navegación */
+.nav-izquierda,
+.nav-centro,
+.nav-derecha {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.65rem, 1.2vw, 1rem);
+    letter-spacing: 0.1em;
+    color: white;
+    text-transform: uppercase;
+    flex: 0 0 auto;
+}
+
+/* Navegación izquierda - "(ABOUT)" */
+.nav-izquierda {
+    flex: 1;
+    text-align: left;
+}
+
+/* Navegación centro - "MIXING INTERACTIONS..." */
+.nav-centro {
+    flex: 2;
+    text-align: center;
+}
+
+/* Navegación derecha - "(CONTACT)" */
+.nav-derecha {
+    flex: 1;
+    text-align: right;
+}
+
+/* ============================================
+   SECCIÓN TÍTULO FOLIO (DESIGN - FOLIO)
+   ============================================ */
+.seccion-titulo-folio {
+    text-align: center;
+    padding: 0 5%;
+    margin-bottom: 8vh;
+    position: relative;
+    z-index: 2;
+}
+
+/* Parte "DESIGN" - en fuente monoespaciada */
+.texto-design {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(1.8rem, 4.5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: white;
+    text-transform: uppercase;
+}
+
+/* Parte "- FOLIO" - en fuente serif cursiva */
+.texto-folio {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.8vw, 3rem);
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    color: white;
+    margin-left: 0.3em;
+}
+
+/* ============================================
+   DESCRIPCIÓN INFERIOR
+   ============================================ */
+.descripcion-inferior {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.55rem, 1vw, 0.85rem);
+    text-align: center;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: white;
+    padding: 0 5% 2vh 5%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    line-height: 1.8;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   RESPONSIVE - TABLETS Y MÓVILES
+   ============================================ */
+@media (max-width: 768px) {
+    /* Navegación en columna en pantallas pequeñas */
+    .seccion-navegacion {
+        flex-direction: column;
+        gap: 1.5vh;
+    }
+    
+    .nav-izquierda,
+    .nav-centro,
+    .nav-derecha {
+        text-align: center;
+        flex: auto;
+    }
+    
+    .seccion-titulo-folio {
+        padding: 2vh 5%;
+    }
 }
