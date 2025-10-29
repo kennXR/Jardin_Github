@@ -1,0 +1,237 @@
+/* ============================================
+   CANALS - Amsterdam Design
+   1440px x 750px
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    position: relative;
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+    background: #1a1a1a;
+}
+
+/* Background Image */
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.background-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 100;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 30px;
+    padding: 5px 0;
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+/* Left Sidebar */
+.left-sidebar {
+    position: absolute;
+    top: 90px;
+    left: 0;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding-left: 25px;
+    z-index: 50;
+}
+
+.credits {
+    font-size: 10px;
+    font-weight: 400;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    color: white;
+    letter-spacing: 0.12em;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.vertical-line {
+    width: 1px;
+    height: 30px;
+    background: white;
+}
+
+.city {
+    font-size: 13px;
+    font-weight: 600;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    color: white;
+    letter-spacing: 0.15em;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.vertical-logo {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.logo-x {
+    color: #e02020;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Main Title: CANALS */
+.main-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 240px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    word-spacing: 0;
+    color: #e02020;
+    z-index: 30;
+    text-transform: uppercase;
+    font-style: normal;
+    line-height: 0.9;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    -webkit-text-stroke: 0px transparent;
+    text-shadow: none;
+    font-feature-settings: "tnum" 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Description Block */
+.description-block {
+    position: absolute;
+    bottom: 110px;
+    left: 40px;
+    z-index: 40;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 16px;
+    line-height: 1.65;
+    font-weight: 400;
+    max-width: 360px;
+    font-family: Georgia, 'Times New Roman', serif;
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.description-block p {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 1px;
+}
+
+/* Footer Text */
+.footer-text {
+    position: absolute;
+    bottom: 30px;
+    left: 40px;
+    z-index: 40;
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Circular Button */
+.circular-button {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #e02020;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    transition: all 0.3s ease;
+}
+
+.circular-button:hover {
+    background: #c01a1a;
+    transform: scale(1.05);
+}
+
+.circular-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1600px) {
+    .container {
+        transform: scale(0.9);
+    }
+}
+
+@media (max-width: 1200px) {
+    .container {
+        transform: scale(0.7);
+    }
+}
