@@ -127,10 +127,26 @@ body {
 .mid-label.left { left: 470px; }
 .mid-label.right { right: 470px; }
 
+/* Kenne Reth centered */
+.kenne-reth {
+    position: absolute;
+    top: 526px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.32em; /* separación entre letras */
+    word-spacing: 0.8em;    /* separación entre palabras */
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    z-index: 5;
+}
+
 /* Agency text */
 .agency {
     position: absolute;
-    top: 540px;
+    top: 590px; /* bajamos para dejar espacio a KENNE RETH */
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
@@ -141,13 +157,15 @@ body {
 /* Giant words bottom */
 .giants {
     position: absolute;
-    bottom: -12px;
+    bottom: 10px;
     left: 0;
     right: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-end;
+    gap: 220px; /* separamos RE y TH para que el texto central respire */
     pointer-events: none;
+    z-index: 1;
 }
 
 .jam, .area {
@@ -155,11 +173,13 @@ body {
     font-weight: 800;
     letter-spacing: -0.01em;
     color: #0f0f0f;
-    font-size: 320px;
-    line-height: 0.8;
+    font-size: 210px; /* sólo letras gigantes RETH */
+    line-height: 0.76;
 }
-.jam { margin-left: 24px; }
-.area { margin-right: 24px; }
+.jam { margin-left: 0; }
+.area { margin-right: 0; }
+
+.giant-letter { display: inline-block; }
 
 /* Corner bubble */
 .corner-bubble {
