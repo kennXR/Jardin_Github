@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veintavo ejercicio: Imitación7-AnimadaTalvez</title>
+    <title>Veintavo ejercicio: Imitacion7</title>
     <link rel="stylesheet" href="./main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,54 +12,86 @@
 </head>
 <body>
     <div class="stage">
-        <header class="topbar">
-            <div class="menu">
-                <span class="dot"></span>
-                <span>MENU</span>
+        <!-- Fondo con gradiente circular -->
+        <div class="bg-gradient"></div>
+
+        <!-- Parallax layers - Dalias en diferentes profundidades -->
+        <div class="parallax-container">
+            <!-- Dalias en primer plano (muy borrosas) - movimiento rápido -->
+            <div class="parallax-layer layer-far dalia-far-1" data-speed="0.8" data-rotation="-15">
+                <img src="./img/dalia.png" alt="Dalia far 1" class="parallax-img">
             </div>
-            <div class="write">
-                <span>DJHFKDS</span>
-                <span class="dot"></span>
+            <div class="parallax-layer layer-far dalia-far-2" data-speed="0.8" data-rotation="20">
+                <img src="./img/dalia.png" alt="Dalia far 2" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-far dalia-far-3" data-speed="0.8" data-rotation="-25">
+                <img src="./img/dalia.png" alt="Dalia far 3" class="parallax-img">
+            </div>
+            
+            <!-- Dalias en medio - movimiento medio -->
+            <div class="parallax-layer layer-mid dalia-mid-1" data-speed="0.5" data-rotation="30">
+                <img src="./img/dalia.png" alt="Dalia mid 1" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-mid dalia-mid-2" data-speed="0.5" data-rotation="-20">
+                <img src="./img/dalia.png" alt="Dalia mid 2" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-mid dalia-mid-3" data-speed="0.4" data-rotation="15">
+                <img src="./img/dalia.png" alt="Dalia mid 3" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-mid dalia-mid-4" data-speed="0.4" data-rotation="-30">
+                <img src="./img/dalia.png" alt="Dalia mid 4" class="parallax-img">
+            </div>
+            
+            <!-- Dalias en fondo - movimiento lento -->
+            <div class="parallax-layer layer-back dalia-back-1" data-speed="0.2" data-rotation="45">
+                <img src="./img/dalia.png" alt="Dalia back 1" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-back dalia-back-2" data-speed="0.2" data-rotation="-45">
+                <img src="./img/dalia.png" alt="Dalia back 2" class="parallax-img">
+            </div>
+        </div>
+
+        <!-- Texto grande de fondo "ethical life" -->
+        <div class="bg-text">ethical life</div>
+
+        <!-- Header -->
+        <header class="header">
+            <!-- Navegación izquierda -->
+            <nav class="nav-left">
+                <a href="#" class="nav-link">ABOUT</a>
+                <a href="#" class="nav-link">SHOP</a>
+                <a href="#" class="nav-link">LEARN</a>
+            </nav>
+
+            <!-- Banner central con logo -->
+            <div class="logo-banner">
+                <span class="leaf-icon">🍃</span>
+                <span class="logo-text">ethical life</span>
+            </div>
+
+            <!-- Iconos derecha -->
+            <div class="header-icons">
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
             </div>
         </header>
 
-        <h1 class="project-title">Luna - El perro que slto por la ventana</h1>
-
-        <!-- faded thumbnails -->
-        <div class="thumb t1"></div>
-        <div class="thumb t2"></div>
-        <div class="thumb t3"></div>
-        <div class="thumb t4"></div>
-        <div class="thumb t5"></div>
-        <div class="thumb t6"></div>
-
-        <!-- center card -->
-        <div class="center-card">
-            <div class="save-badge">Save</div>
-            <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Foto proyecto">
+        <!-- Dalia central - elemento principal -->
+        <div class="product-container">
+            <img src="./img/dalia.png" alt="Dalia central" class="product-dalia">
         </div>
 
-        <!-- mid labels -->
-        <div class="mid-label left">DISCOVER</div>
-        <div class="mid-label right">PROJECT</div>
-        <div class="kenne-reth">KENNERETH</div>
-
-        <!-- agency text -->
-        <div class="agency">
-            <div class="c">©RETH</div>
-            <div>NO SE QUE HACER CON MI VIDA</div>
-            <div>AYUDA</div>
-            <div>QUIERO DORMIR</div>
-        </div>
-
-        <!-- bottom giant words -->
-        <div class="giants">
-            <div class="jam">RE</div>
-            <div class="area">TH</div>
-        </div>
-
-        <!-- corner bubble -->
-        <button class="corner-bubble">CO</button>
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Pharmacist and Nutritionist Formulated</p>
+        </footer>
     </div>
 </body>
 </html>

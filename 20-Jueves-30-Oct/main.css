@@ -1,5 +1,5 @@
 /* ============================================
-   JAMAREA Replica (1440 x 750)
+   ETHICAL LIFE - Parallax Composition (1440 x 750)
    ============================================ */
 
 * {
@@ -16,9 +16,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f7f6ef;
+    background: #f5f5f5;
     font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color: #0f0f0f;
+    color: #000;
 }
 
 .stage {
@@ -26,297 +26,326 @@ body {
     width: 1440px;
     height: 750px;
     overflow: hidden;
-    background: #fffef7;
-}
-
-/* Top bar */
-.topbar {
-    position: absolute;
-    top: 18px;
-    left: 24px;
-    right: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    opacity: 0;
-}
-
-.topbar .dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: #0f0f0f;
-    border-radius: 50%;
-    margin: 0 8px;
-}
-
-.menu, .write { 
-    display: flex; 
-    align-items: center; 
-    gap: 6px; 
-    cursor: pointer;
-}
-
-/* Title */
-.project-title {
-    position: absolute;
-    top: 56px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-}
-
-/* Thumbnails (faded) */
-.thumb {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 4px;
-    background-image: url('./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg');
-    background-size: cover;
-    background-position: center;
-    filter: grayscale(100%) brightness(1.15);
-}
-
-.t1 { top: 70px; left: 136px; opacity: 0.35; }
-.t2 { top: 72px; left: 374px; opacity: 0.45; }
-.t3 { top: 74px; right: 540px; width: 140px; opacity: 0.30; }
-.t4 { top: 74px; right: 156px; opacity: 0.35; }
-.t5 { top: 260px; left: 270px; width: 100px; height: 100px; opacity: 0.55; }
-.t6 { top: 260px; right: 270px; width: 100px; height: 100px; opacity: 0.55; }
-
-/* Center card */
-.center-card {
-    position: absolute;
-    top: 210px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 220px;
-    height: 280px;
-    border-radius: 8px;
-    background: #d7d3ff;
-    overflow: hidden;
-}
-
-.center-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.save-badge {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: #e60023;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 10px;
-    border-radius: 16px;
-    z-index: 2;
-}
-
-/* Mid labels */
-.mid-label {
-    position: absolute;
-    top: 520px;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: #6e6e6e;
-}
-.mid-label.left { left: 470px; }
-.mid-label.right { right: 470px; }
-
-/* Kenne Reth centered */
-.kenne-reth {
-    position: absolute;
-    top: 526px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 0.32em; /* separación entre letras */
-    word-spacing: 0.8em;    /* separación entre palabras */
-    white-space: nowrap;
-    text-transform: uppercase;
-    color: #1a1a1a;
-    z-index: 5;
-}
-
-/* Agency text */
-.agency {
-    position: absolute;
-    top: 590px; /* bajamos para dejar espacio a KENNE RETH */
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-weight: 800;
-}
-.agency .c { margin-bottom: 6px; }
-
-/* Giant words bottom */
-.giants {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 220px; /* separamos RE y TH para que el texto central respire */
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0;
-}
-
-.jam, .area {
-    font-family: 'Archivo', Impact, sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    color: #0f0f0f;
-    font-size: 210px; /* sólo letras gigantes RETH */
-    line-height: 0.76;
-}
-.jam { margin-left: 0; }
-.area { margin-right: 0; }
-
-.giant-letter { display: inline-block; }
-
-/* Corner bubble */
-.corner-bubble {
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #e62e2e;
-    color: #fff;
-    font-weight: 800;
-    border: none;
-    cursor: pointer;
+    background: #ffffff;
 }
 
 /* ============================================
-   ANIMACIONES
+   FONDO CON GRADIENTE CIRCULAR
    ============================================ */
 
-/* Intro: Animación de entrada para elementos */
-@keyframes introFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.bg-gradient {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 255, 200, 0.4) 0%, rgba(200, 255, 200, 0.3) 50%, transparent 70%);
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
 }
 
-/* Intro: Animación especial para letras gigantes */
-@keyframes introGiantText {
-    0% {
-        opacity: 0;
-        transform: scale(0.8) translateY(50px);
-    }
-    50% {
-        opacity: 0.8;
-        transform: scale(1.05) translateY(0);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+/* ============================================
+   TEXTO GRANDE DE FONDO "ethical life"
+   ============================================ */
+
+.bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 180px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #1a4d8c; /* Azul real */
+    z-index: 2;
+    white-space: nowrap;
+    pointer-events: none;
+    font-family: 'Inter', sans-serif;
+    opacity: 0.9;
 }
 
-/* Animación de fade in/out para textos */
-@keyframes fadeInOut {
-    0%, 100% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
+/* ============================================
+   PARALLAX LAYERS - ESTRELLAS
+   ============================================ */
+
+.parallax-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 3;
 }
 
-/* Animación de pulso de opacidad para miniaturas */
-@keyframes pulseOpacity {
-    0%, 100% {
-        opacity: var(--base-opacity, 0.4);
-    }
-    50% {
-        opacity: calc(var(--base-opacity, 0.4) + 0.3);
-    }
+.parallax-layer {
+    position: absolute;
+    will-change: transform;
+    transition: transform 0.6s ease-out;
+    /* Preservar rotación inicial durante parallax */
+    transform-origin: center center;
 }
 
-/* Animación de cambio de color */
-@keyframes colorShift {
-    0% {
-        filter: hue-rotate(0deg) saturate(1);
-    }
-    25% {
-        filter: hue-rotate(90deg) saturate(1.2);
-    }
-    50% {
-        filter: hue-rotate(180deg) saturate(1.1);
-    }
-    75% {
-        filter: hue-rotate(270deg) saturate(1.2);
-    }
-    100% {
-        filter: hue-rotate(360deg) saturate(1);
-    }
+.parallax-container.active .parallax-layer {
+    transition: none;
 }
 
-/* Aplicar base opacity a las miniaturas para animaciones */
-.thumb {
-    --base-opacity: 0.4;
-    transition: filter 0.4s ease, opacity 0.4s ease, transform 0.3s ease;
-    cursor: pointer;
+.parallax-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
 }
 
-.t1 { --base-opacity: 0.35; }
-.t2 { --base-opacity: 0.45; }
-.t3 { --base-opacity: 0.30; }
-.t4 { --base-opacity: 0.35; }
-.t5 { --base-opacity: 0.55; }
-.t6 { --base-opacity: 0.55; }
+/* Dalias en primer plano (muy borrosas) - esquinas */
+.layer-far.dalia-far-1 {
+    top: 50px;
+    left: 50px;
+    width: 250px;
+    height: 250px;
+}
 
-.thumb:hover {
-    transform: scale(1.05);
+.layer-far.dalia-far-1 .parallax-img {
+    filter: blur(10px) brightness(1.1);
+    opacity: 0.7;
+}
+
+.layer-far.dalia-far-2 {
+    top: 80px;
+    right: 100px;
+    width: 220px;
+    height: 220px;
+}
+
+.layer-far.dalia-far-2 .parallax-img {
+    filter: blur(12px) brightness(1.2);
+    opacity: 0.6;
+}
+
+.layer-far.dalia-far-3 {
+    bottom: 100px;
+    right: 80px;
+    width: 280px;
+    height: 280px;
+}
+
+.layer-far.dalia-far-3 .parallax-img {
+    filter: blur(9px) brightness(1.15);
+    opacity: 0.65;
+}
+
+/* Dalias en medio - alrededor del producto */
+.layer-mid.dalia-mid-1 {
+    top: 200px;
+    left: 300px;
+    width: 180px;
+    height: 180px;
+}
+
+.layer-mid.dalia-mid-1 .parallax-img {
+    filter: blur(4px);
+    opacity: 0.8;
+}
+
+.layer-mid.dalia-mid-2 {
+    top: 280px;
+    right: 350px;
+    width: 160px;
+    height: 160px;
+}
+
+.layer-mid.dalia-mid-2 .parallax-img {
+    filter: blur(3px);
+    opacity: 0.85;
+}
+
+.layer-mid.dalia-mid-3 {
+    bottom: 250px;
+    left: 400px;
+    width: 170px;
+    height: 170px;
+}
+
+.layer-mid.dalia-mid-3 .parallax-img {
+    filter: blur(4px);
+    opacity: 0.75;
+}
+
+.layer-mid.dalia-mid-4 {
+    top: 350px;
+    right: 250px;
+    width: 140px;
+    height: 140px;
+}
+
+.layer-mid.dalia-mid-4 .parallax-img {
+    filter: blur(2px);
+    opacity: 0.9;
+}
+
+/* Dalias en fondo - movimiento lento */
+.layer-back.dalia-back-1 {
+    top: 150px;
+    left: 200px;
+    width: 120px;
+    height: 120px;
+}
+
+.layer-back.dalia-back-1 .parallax-img {
+    filter: blur(1px) opacity(0.6);
+    opacity: 0.5;
+}
+
+.layer-back.dalia-back-2 {
+    bottom: 200px;
+    right: 300px;
+    width: 100px;
+    height: 100px;
+}
+
+.layer-back.dalia-back-2 .parallax-img {
+    filter: blur(1px) opacity(0.6);
+    opacity: 0.5;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.header {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
     z-index: 10;
 }
 
-/* Animación en la tarjeta central */
-.center-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Navegación izquierda */
+.nav-left {
+    display: flex;
+    gap: 32px;
+}
+
+.nav-link {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #000;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: opacity 0.3s ease;
+}
+
+.nav-link:hover {
+    opacity: 0.6;
+}
+
+/* Banner central con logo */
+.logo-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #9aff00; /* Verde lima brillante */
+    padding: 8px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.leaf-icon {
+    font-size: 16px;
+    display: inline-block;
+}
+
+.logo-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+}
+
+/* Iconos derecha */
+.header-icons {
+    display: flex;
+    gap: 20px;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    stroke: #000;
+    stroke-width: 2;
+    fill: none;
     cursor: pointer;
+    transition: opacity 0.3s ease;
 }
 
-.center-card:hover {
-    transform: translateX(-50%) translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+.icon:hover {
+    opacity: 0.6;
 }
 
-.center-card img {
-    transition: filter 0.5s ease, transform 0.5s ease;
+/* ============================================
+   PRODUCTO - DALIA CENTRAL
+   ============================================ */
+
+.product-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: none;
 }
 
-/* Animación de los textos */
-.project-title,
-.kenne-reth,
-.agency,
-.mid-label {
-    transition: opacity 0.5s ease;
+.product-dalia {
+    width: 320px;
+    height: auto;
+    max-width: 100%;
+    transform: rotate(12deg) translateY(-15px);
+    filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.25));
+    opacity: 1;
+    /* Sin blur para que sea nítida como elemento central */
+    object-fit: contain;
+    display: block;
 }
 
-/* Scale down slightly on smaller desktops just to keep it neat in previews */
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+}
+
+.footer p {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: #000;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
 @media (max-width: 1600px) {
-    .stage { transform: scale(0.95); transform-origin: top left; }
+    .stage { 
+        transform: scale(0.95); 
+        transform-origin: top left; 
+    }
 }
