@@ -1,0 +1,578 @@
+/* ============================================
+   THE BEST YOU - Parallax Composition (1440 x 750)
+   Inspirado en experiencethebestyou.com
+   ============================================ */
+
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+/* ============================================
+   CENTRADO DEL ESCENARIO
+   ============================================ */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #fff;
+    overflow: hidden;
+}
+
+.stage {
+    position: relative;
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+    background: #000;
+}
+
+/* ============================================
+   FONDO CON GRADIENTES VIBRANTES
+   ============================================ */
+.bg-gradient-vibrant {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.6) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(75, 0, 130, 0.5) 0%, transparent 50%),
+        radial-gradient(circle at 30% 80%, rgba(255, 20, 147, 0.6) 0%, transparent 50%),
+        radial-gradient(circle at 70% 90%, rgba(255, 69, 0, 0.5) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255, 0, 150, 0.4) 0%, transparent 70%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ============================================
+   TICKET/BOARDING PASS DIAGONAL
+   ============================================ */
+.ticket-graphic {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(15deg);
+    width: 1000px;
+    height: 400px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.ticket-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(75, 0, 130, 0.4) 0%, rgba(138, 43, 226, 0.3) 100%);
+    border-radius: 20px 0 0 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.ticket-left::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
+}
+
+.ticket-left::after {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    left: 30px;
+    width: 60px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 0 rgba(255, 255, 255, 0.6),
+                0 16px 0 rgba(255, 255, 255, 0.6),
+                0 24px 0 rgba(255, 255, 255, 0.6);
+}
+
+.ticket-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.3) 0%, rgba(255, 69, 0, 0.2) 100%);
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.ticket-right::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 80px;
+    height: 80px;
+    background: 
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.4) 0px, rgba(255, 255, 255, 0.4) 8px, transparent 8px, transparent 16px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0px, rgba(255, 255, 255, 0.4) 8px, transparent 8px, transparent 16px);
+    border-radius: 4px;
+}
+
+/* ============================================
+   PARALLAX LAYERS - Fotos del perro
+   ============================================ */
+.parallax-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.parallax-layer {
+    position: absolute;
+    will-change: transform;
+    transition: transform 0.6s ease-out;
+    transform-origin: center center;
+}
+
+.parallax-container.active .parallax-layer {
+    transition: none;
+}
+
+.parallax-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* Fotos borrosas de fondo */
+.layer-far.dalia-far-1 {
+    top: 60px;
+    left: calc(50% - 375px);
+    width: 250px;
+    height: 250px;
+}
+.layer-far.dalia-far-1 .parallax-img {
+    filter: blur(10px) brightness(1.1);
+    opacity: 0.7;
+}
+
+.layer-far.dalia-far-2 {
+    top: 60px;
+    right: 50px;
+    width: 220px;
+    height: 220px;
+}
+.layer-far.dalia-far-2 .parallax-img {
+    filter: blur(12px) brightness(1.2);
+    opacity: 0.6;
+}
+
+.layer-far.dalia-far-3 {
+    bottom: 80px;
+    left: calc(50% - 140px);
+    width: 280px;
+    height: 280px;
+}
+.layer-far.dalia-far-3 .parallax-img {
+    filter: blur(9px) brightness(1.15);
+    opacity: 0.65;
+}
+
+/* Capas medias */
+.layer-mid.dalia-mid-1 {
+    top: calc(50% - 250px);
+    left: calc(50% - 520px);
+    width: 180px;
+    height: 180px;
+}
+.layer-mid.dalia-mid-1 .parallax-img {
+    filter: blur(4px);
+    opacity: 0.8;
+}
+
+.layer-mid.dalia-mid-2 {
+    top: calc(50% - 240px);
+    right: calc(50% - 330px);
+    width: 160px;
+    height: 160px;
+}
+.layer-mid.dalia-mid-2 .parallax-img {
+    filter: blur(3px);
+    opacity: 0.85;
+}
+
+.layer-mid.dalia-mid-3 {
+    bottom: calc(50% - 295px);
+    left: calc(50% - 485px);
+    width: 170px;
+    height: 170px;
+}
+.layer-mid.dalia-mid-3 .parallax-img {
+    filter: blur(4px);
+    opacity: 0.75;
+}
+
+.layer-mid.dalia-mid-4 {
+    top: calc(50% - 230px);
+    right: calc(50% - 380px);
+    width: 140px;
+    height: 140px;
+}
+.layer-mid.dalia-mid-4 .parallax-img {
+    filter: blur(2px);
+    opacity: 0.9;
+}
+
+/* Fondo más lejano */
+.layer-back.dalia-back-1 {
+    top: calc(50% - 210px);
+    left: calc(50% - 510px);
+    width: 120px;
+    height: 120px;
+}
+.layer-back.dalia-back-1 .parallax-img {
+    filter: blur(1px);
+    opacity: 0.5;
+}
+
+.layer-back.dalia-back-2 {
+    top: calc(50% - 200px);
+    right: calc(50% - 430px);
+    width: 100px;
+    height: 100px;
+}
+.layer-back.dalia-back-2 .parallax-img {
+    filter: blur(1px);
+    opacity: 0.5;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon {
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.language-selector:hover {
+    opacity: 0.8;
+}
+
+.chevron {
+    width: 12px;
+    height: 12px;
+    stroke: #fff;
+}
+
+.action-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.action-button svg {
+    stroke: #fff;
+}
+
+/* ============================================
+   CONTENIDO CENTRAL - CARRUSEL
+   ============================================ */
+.content-container {
+    position: absolute;
+    top: 48%;
+    left: 48%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+}
+
+.main-headline {
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 60px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
+}
+
+/* Carrusel de tarjetas */
+.cards-carousel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    perspective: 1000px;
+    margin-bottom: 40px;
+}
+
+.card {
+    width: 320px;
+    height: 420px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    cursor: grab;
+}
+
+.card:active {
+    cursor: grabbing;
+}
+
+.card-left {
+    transform: translateX(-30px) scale(0.9);
+    opacity: 0.7;
+}
+
+.card-center {
+    transform: scale(1);
+    opacity: 1;
+    z-index: 2;
+}
+
+.card-right {
+    transform: translateX(30px) scale(0.9);
+    opacity: 0.7;
+}
+
+.card-image {
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-image-center {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.card-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg') center/cover no-repeat;
+    opacity: 0.3;
+    filter: blur(2px);
+}
+
+.card-content {
+    padding: 24px;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.drag-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.drag-icon {
+    font-size: 16px;
+}
+
+.card-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* Botón Next */
+.next-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 32px;
+    background: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.next-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.button-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================
+   FOTO DEL PERRO CENTRAL DESTACADA
+   ============================================ */
+.product-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    width: 300px;
+    height: auto;
+}
+
+.product-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    z-index: -1;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+.product-perro {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.3)) 
+            drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+    opacity: 1;
+    object-fit: contain;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+    position: absolute;
+    bottom: 24px;
+    left: 40px;
+    display: flex;
+    gap: 24px;
+    z-index: 10;
+}
+
+.footer a {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: underline;
+    transition: opacity 0.3s ease;
+}
+
+.footer a:hover {
+    opacity: 1;
+}

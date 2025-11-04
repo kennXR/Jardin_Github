@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Best You - Parallax Composition</title>
+    <link rel="stylesheet" href="./main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="./animations.js" defer></script>
+</head>
+<body>
+    <div class="stage">
+        <!-- Fondo con gradientes vibrantes -->
+        <div class="bg-gradient-vibrant"></div>
+
+        <!-- Parallax layers - Dalias en diferentes profundidades -->
+        <div class="parallax-container">
+            <!-- Dalias en primer plano (muy borrosas) - movimiento rápido -->
+            <div class="parallax-layer layer-far dalia-far-1" data-speed="0.8" data-rotation="-15">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro far 1" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-far dalia-far-2" data-speed="0.8" data-rotation="20">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro far 2" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-far dalia-far-3" data-speed="0.8" data-rotation="-25">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro far 3" class="parallax-img">
+            </div>
+            
+            <!-- Dalias en medio - movimiento medio -->
+            <div class="parallax-layer layer-mid dalia-mid-1" data-speed="0.5" data-rotation="30">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro mid 1" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-mid dalia-mid-2" data-speed="0.5" data-rotation="-20">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro mid 2" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-mid dalia-mid-3" data-speed="0.4" data-rotation="15">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro mid 3" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-mid dalia-mid-4" data-speed="0.4" data-rotation="-30">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro mid 4" class="parallax-img">
+            </div>
+            
+            <!-- Dalias en fondo - movimiento lento -->
+            <div class="parallax-layer layer-back dalia-back-1" data-speed="0.2" data-rotation="45">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro back 1" class="parallax-img">
+            </div>
+            <div class="parallax-layer layer-back dalia-back-2" data-speed="0.2" data-rotation="-45">
+                <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro back 2" class="parallax-img">
+            </div>
+        </div>
+
+        <!-- Ticket/Boarding Pass diagonal -->
+        <div class="ticket-graphic">
+            <div class="ticket-left"></div>
+            <div class="ticket-right"></div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <!-- Logo izquierda -->
+            <div class="logo">
+                <span class="logo-icon">🍃</span>
+                <span class="logo-text">klook</span>
+            </div>
+
+            <!-- Selector de idioma y botón acción -->
+            <div class="header-right">
+                <div class="language-selector">
+                    <span>English</span>
+                    <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 4.5L6 7.5L9 4.5"/>
+                    </svg>
+                </div>
+                <button class="action-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 8L14 8M8 2L14 8L8 14"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenido central - Carrusel de tarjetas -->
+        <div class="content-container">
+            <h1 class="main-headline">What does the best you look like?</h1>
+            
+            <!-- Carrusel de tarjetas -->
+            <div class="cards-carousel">
+                <div class="card card-left">
+                    <div class="card-image"></div>
+                    <div class="card-content">
+                        <p class="card-text">Away on an adventure—expect many updates!</p>
+                    </div>
+                </div>
+                
+                <div class="card card-center">
+                    <div class="card-image card-image-center"></div>
+                    <div class="card-content">
+                        <div class="drag-hint">
+                            <span class="drag-icon">👉</span>
+                            <span>Drag the cards horizontally to cycle through your options.</span>
+                        </div>
+                        <p class="card-text">Off-grid mode ON. If you need me… don't.</p>
+                    </div>
+                </div>
+                
+                <div class="card card-right">
+                    <div class="card-image"></div>
+                    <div class="card-content">
+                        <p class="card-text">Recharging myself (and my camera battery)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Next -->
+            <button class="next-button">
+                <span>Next</span>
+                <div class="button-icon">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2">
+                        <path d="M7 5L13 10L7 15"/>
+                    </svg>
+                </div>
+            </button>
+        </div>
+
+        <!-- Foto del perro central destacada -->
+        <div class="product-container">
+            <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro central" class="product-perro">
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+        </footer>
+    </div>
+</body>
+</html>

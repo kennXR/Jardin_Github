@@ -325,4 +325,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }, index * 150);
     });
 });
-
