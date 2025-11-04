@@ -1,0 +1,322 @@
+/* ============================================
+   JAMAREA Replica (1440 x 750)
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f7f6ef;
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #0f0f0f;
+}
+
+.stage {
+    position: relative;
+    width: 1440px;
+    height: 750px;
+    overflow: hidden;
+    background: #fffef7;
+}
+
+/* Top bar */
+.topbar {
+    position: absolute;
+    top: 18px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0;
+}
+
+.topbar .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #0f0f0f;
+    border-radius: 50%;
+    margin: 0 8px;
+}
+
+.menu, .write { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    cursor: pointer;
+}
+
+/* Title */
+.project-title {
+    position: absolute;
+    top: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+/* Thumbnails (faded) */
+.thumb {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 4px;
+    background-image: url('./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) brightness(1.15);
+}
+
+.t1 { top: 70px; left: 136px; opacity: 0.35; }
+.t2 { top: 72px; left: 374px; opacity: 0.45; }
+.t3 { top: 74px; right: 540px; width: 140px; opacity: 0.30; }
+.t4 { top: 74px; right: 156px; opacity: 0.35; }
+.t5 { top: 260px; left: 270px; width: 100px; height: 100px; opacity: 0.55; }
+.t6 { top: 260px; right: 270px; width: 100px; height: 100px; opacity: 0.55; }
+
+/* Center card */
+.center-card {
+    position: absolute;
+    top: 210px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 280px;
+    border-radius: 8px;
+    background: #d7d3ff;
+    overflow: hidden;
+}
+
+.center-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.save-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #e60023;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 16px;
+    z-index: 2;
+}
+
+/* Mid labels */
+.mid-label {
+    position: absolute;
+    top: 520px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #6e6e6e;
+}
+.mid-label.left { left: 470px; }
+.mid-label.right { right: 470px; }
+
+/* Kenne Reth centered */
+.kenne-reth {
+    position: absolute;
+    top: 526px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.32em; /* separación entre letras */
+    word-spacing: 0.8em;    /* separación entre palabras */
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    z-index: 5;
+}
+
+/* Agency text */
+.agency {
+    position: absolute;
+    top: 590px; /* bajamos para dejar espacio a KENNE RETH */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-weight: 800;
+}
+.agency .c { margin-bottom: 6px; }
+
+/* Giant words bottom */
+.giants {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 220px; /* separamos RE y TH para que el texto central respire */
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+}
+
+.jam, .area {
+    font-family: 'Archivo', Impact, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #0f0f0f;
+    font-size: 210px; /* sólo letras gigantes RETH */
+    line-height: 0.76;
+}
+.jam { margin-left: 0; }
+.area { margin-right: 0; }
+
+.giant-letter { display: inline-block; }
+
+/* Corner bubble */
+.corner-bubble {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #e62e2e;
+    color: #fff;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+/* Intro: Animación de entrada para elementos */
+@keyframes introFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Intro: Animación especial para letras gigantes */
+@keyframes introGiantText {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05) translateY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Animación de fade in/out para textos */
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Animación de pulso de opacidad para miniaturas */
+@keyframes pulseOpacity {
+    0%, 100% {
+        opacity: var(--base-opacity, 0.4);
+    }
+    50% {
+        opacity: calc(var(--base-opacity, 0.4) + 0.3);
+    }
+}
+
+/* Animación de cambio de color */
+@keyframes colorShift {
+    0% {
+        filter: hue-rotate(0deg) saturate(1);
+    }
+    25% {
+        filter: hue-rotate(90deg) saturate(1.2);
+    }
+    50% {
+        filter: hue-rotate(180deg) saturate(1.1);
+    }
+    75% {
+        filter: hue-rotate(270deg) saturate(1.2);
+    }
+    100% {
+        filter: hue-rotate(360deg) saturate(1);
+    }
+}
+
+/* Aplicar base opacity a las miniaturas para animaciones */
+.thumb {
+    --base-opacity: 0.4;
+    transition: filter 0.4s ease, opacity 0.4s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.t1 { --base-opacity: 0.35; }
+.t2 { --base-opacity: 0.45; }
+.t3 { --base-opacity: 0.30; }
+.t4 { --base-opacity: 0.35; }
+.t5 { --base-opacity: 0.55; }
+.t6 { --base-opacity: 0.55; }
+
+.thumb:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+/* Animación en la tarjeta central */
+.center-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.center-card:hover {
+    transform: translateX(-50%) translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.center-card img {
+    transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+/* Animación de los textos */
+.project-title,
+.kenne-reth,
+.agency,
+.mid-label {
+    transition: opacity 0.5s ease;
+}
+
+/* Scale down slightly on smaller desktops just to keep it neat in previews */
+@media (max-width: 1600px) {
+    .stage { transform: scale(0.95); transform-origin: top left; }
+}
