@@ -274,7 +274,6 @@ body {
     --base-opacity: 0.4;
     transition: filter 0.4s ease, opacity 0.4s ease, transform 0.3s ease;
     cursor: pointer;
-    position: relative;
 }
 
 .t1 { --base-opacity: 0.35; }

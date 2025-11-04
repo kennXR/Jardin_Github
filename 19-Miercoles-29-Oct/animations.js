@@ -108,7 +108,10 @@ function initThumbOpacityAnimations() {
     thumbs.forEach((thumb, index) => {
         const className = Array.from(thumb.classList).find(cls => cls.startsWith('t'));
         const baseOpacity = opacityMap[className] || 0.4;
+        // Establecer la opacidad base para la animación CSS
         thumb.style.setProperty('--base-opacity', baseOpacity);
+        // Reestablecer la opacidad original antes de aplicar la animación
+        thumb.style.opacity = baseOpacity;
         thumb.style.animation = `pulseOpacity ${2.5 + index * 0.2}s ease-in-out infinite`;
         thumb.style.animationDelay = `${index * 0.15}s`;
     });
