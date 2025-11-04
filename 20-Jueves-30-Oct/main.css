@@ -405,7 +405,7 @@ body {
 .footer {
     position: absolute;
     top: 85%;
-    left: 40%;
+    left: 44%;
     transform: translate(-50%, -50%);
     z-index: 10;
     text-align: center;
