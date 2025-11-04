@@ -52,22 +52,28 @@ body {
 
 .bg-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 35%;
+    left: 18%;
+    transform: translate(50%, 50%);
     font-size: 180px;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #1a4d8c; /* Azul real */
+    letter-spacing: 0;
+    color: #490303; /* Azul real */
     z-index: 2;
     white-space: nowrap;
     pointer-events: none;
     font-family: 'Inter', sans-serif;
     opacity: 0.9;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    /* Asegurar centrado perfecto */
+    text-align: center;
+    width: auto;
 }
 
 /* ============================================
-   PARALLAX LAYERS - ESTRELLAS
+   PARALLAX LAYERS - Dalias
    ============================================ */
 
 .parallax-container {
@@ -103,10 +109,10 @@ body {
     z-index: 1;
 }
 
-/* Dalias en primer plano (muy borrosas) - esquinas */
+/* Dalias en primer plano (muy borrosas) - distribuidas alrededor del centro */
 .layer-far.dalia-far-1 {
-    top: 50px;
-    left: 50px;
+    top: 60px;
+    left: calc(50% - 375px); /* 720px (mitad) - 250px (ancho) - 200px (offset) */
     width: 250px;
     height: 250px;
 }
@@ -117,8 +123,8 @@ body {
 }
 
 .layer-far.dalia-far-2 {
-    top: 80px;
-    right: 100px;
+    top: 60px;
+    right: 50px;
     width: 220px;
     height: 220px;
 }
@@ -129,8 +135,8 @@ body {
 }
 
 .layer-far.dalia-far-3 {
-    bottom: 100px;
-    right: 80px;
+    bottom: 80px;
+    left: calc(50% - 140px); /* 720px (mitad) - 280px (ancho) + 180px (offset) */
     width: 280px;
     height: 280px;
 }
@@ -140,10 +146,10 @@ body {
     opacity: 0.65;
 }
 
-/* Dalias en medio - alrededor del producto */
+/* Dalias en medio - alrededor del centro */
 .layer-mid.dalia-mid-1 {
-    top: 200px;
-    left: 300px;
+    top: calc(50% - 250px); /* 375px - 180px/2 - 100px */
+    left: calc(50% - 520px); /* 720px - 180px/2 - 250px */
     width: 180px;
     height: 180px;
 }
@@ -154,8 +160,8 @@ body {
 }
 
 .layer-mid.dalia-mid-2 {
-    top: 280px;
-    right: 350px;
+    top: calc(50% - 240px); /* 375px - 160px/2 - 80px */
+    right: calc(50% - 330px); /* 720px - 160px/2 - 250px */
     width: 160px;
     height: 160px;
 }
@@ -166,8 +172,8 @@ body {
 }
 
 .layer-mid.dalia-mid-3 {
-    bottom: 250px;
-    left: 400px;
+    bottom: calc(50% - 295px); /* 375px - 170px/2 - 120px */
+    left: calc(50% - 485px); /* 720px - 170px/2 - 200px */
     width: 170px;
     height: 170px;
 }
@@ -178,8 +184,8 @@ body {
 }
 
 .layer-mid.dalia-mid-4 {
-    top: 350px;
-    right: 250px;
+    top: calc(50% - 230px); /* 375px - 140px/2 - 100px */
+    right: calc(50% - 380px); /* 720px - 140px/2 - 200px */
     width: 140px;
     height: 140px;
 }
@@ -189,10 +195,10 @@ body {
     opacity: 0.9;
 }
 
-/* Dalias en fondo - movimiento lento */
+/* Dalias en fondo - movimiento lento, cerca del centro */
 .layer-back.dalia-back-1 {
-    top: 150px;
-    left: 200px;
+    top: calc(50% - 210px); /* 375px - 120px/2 - 50px */
+    left: calc(50% - 510px); /* 720px - 120px/2 - 150px */
     width: 120px;
     height: 120px;
 }
@@ -203,8 +209,8 @@ body {
 }
 
 .layer-back.dalia-back-2 {
-    bottom: 200px;
-    right: 300px;
+    top: calc(50% - 200px); /* 375px - 100px/2 - 50px */
+    right: calc(50% - 430px); /* 720px - 100px/2 - 150px */
     width: 100px;
     height: 100px;
 }
@@ -220,7 +226,7 @@ body {
 
 .header {
     position: absolute;
-    top: 24px;
+    top: 10%;
     left: 0;
     right: 0;
     display: flex;
@@ -252,13 +258,18 @@ body {
 
 /* Banner central con logo */
 .logo-banner {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: #9aff00; /* Verde lima brillante */
+    gap: 15px;
+    background: #5c0505; /* Rojo oscuro */
     padding: 8px 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
 }
 
 .leaf-icon {
@@ -300,23 +311,91 @@ body {
 
 .product-container {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 35%;
+    left: 38%;
     transform: translate(-50%, -50%);
     z-index: 5;
     pointer-events: none;
+    margin: 0;
+    padding: 0;
+    width: 300px;
+    height: auto;
+    /* Señalar la dalia principal con un círculo de resaltado */
+}
+
+.product-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    border: 3px solid #540303;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 
+                0 0 40px rgb(255, 0, 0),
+                inset 0 0 20px rgba(255, 215, 0, 0.2);
+    z-index: -1;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.product-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+    height: 380px;
+    border: 2px dashed rgba(255, 0, 0, 0.5);
+    border-radius: 50%;
+    z-index: -2;
+    animation: rotate 8s linear infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
 
 .product-dalia {
-    width: 320px;
+    width: 100%;
     height: auto;
-    max-width: 100%;
-    transform: rotate(12deg) translateY(-15px);
-    filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.25));
+    display: block;
+    filter: drop-shadow(0 15px 40px rgba(87, 7, 7, 0.25)) 
+            drop-shadow(0 0 15px rgba(255, 0, 0, 0.5));
     opacity: 1;
     /* Sin blur para que sea nítida como elemento central */
     object-fit: contain;
-    display: block;
+    margin: 0;
+    padding: 0;
+    /* Resaltar la dalia principal */
+    animation: subtleFloat 3s ease-in-out infinite;
+}
+
+@keyframes subtleFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
 }
 
 /* ============================================
@@ -325,9 +404,9 @@ body {
 
 .footer {
     position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 85%;
+    left: 40%;
+    transform: translate(-50%, -50%);
     z-index: 10;
     text-align: center;
 }

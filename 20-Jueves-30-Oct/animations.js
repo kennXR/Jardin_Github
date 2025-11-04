@@ -290,6 +290,7 @@ function initParallaxEffect() {
         }
         parallaxLayers.forEach(layer => {
             const rotation = parseFloat(layer.getAttribute('data-rotation')) || 0;
+            // Restaurar posición inicial (sin desplazamiento parallax)
             layer.style.transform = `translate(0, 0) rotate(${rotation}deg)`;
         });
     }
