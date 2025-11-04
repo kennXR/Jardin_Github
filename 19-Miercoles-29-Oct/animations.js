@@ -110,10 +110,11 @@ function initThumbOpacityAnimations() {
         const baseOpacity = opacityMap[className] || 0.4;
         // Establecer la opacidad base para la animación CSS
         thumb.style.setProperty('--base-opacity', baseOpacity);
-        // Reestablecer la opacidad original antes de aplicar la animación
+        // Mantener la opacidad original constante (sin animación de pulso)
         thumb.style.opacity = baseOpacity;
-        thumb.style.animation = `pulseOpacity ${2.5 + index * 0.2}s ease-in-out infinite`;
-        thumb.style.animationDelay = `${index * 0.15}s`;
+        // No aplicar animación de pulso para mantener opacidad constante
+        // thumb.style.animation = `pulseOpacity ${2.5 + index * 0.2}s ease-in-out infinite`;
+        // thumb.style.animationDelay = `${index * 0.15}s`;
     });
 }
 

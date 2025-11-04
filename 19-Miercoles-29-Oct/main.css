@@ -53,7 +53,12 @@ body {
     margin: 0 8px;
 }
 
-.menu, .write { display: flex; align-items: center; gap: 6px; }
+.menu, .write { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    cursor: pointer;
+}
 
 /* Title */
 .project-title {
@@ -291,6 +296,7 @@ body {
 /* Animación en la tarjeta central */
 .center-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
 .center-card:hover {
