@@ -114,6 +114,146 @@ function initParallaxEffect() {
     });
 }
 
+// ============================================
+// HOVER EFFECTS - Imágenes parallax
+// ============================================
+
+function initParallaxImageHovers() {
+    const parallaxImages = document.querySelectorAll('.parallax-img');
+    
+    parallaxImages.forEach(img => {
+        const layer = img.closest('.parallax-layer');
+        
+        // Efecto al pasar el mouse sobre la imagen
+        layer.addEventListener('mouseenter', function() {
+            img.style.transition = 'all 0.3s ease';
+            img.style.transform = 'scale(1.1)';
+            img.style.filter = 'brightness(1.2) blur(0px)';
+            img.style.zIndex = '10';
+            layer.style.zIndex = '10';
+        });
+        
+        // Restaurar cuando el mouse sale
+        layer.addEventListener('mouseleave', function() {
+            const originalBlur = layer.classList.contains('layer-far') ? '10px' :
+                                layer.classList.contains('layer-mid') ? '4px' :
+                                '1px';
+            img.style.transition = 'all 0.4s ease';
+            img.style.transform = 'scale(1)';
+            
+            // Restaurar filtro original según la capa
+            if (layer.classList.contains('dalia-far-1')) {
+                img.style.filter = 'blur(10px) brightness(1.1)';
+            } else if (layer.classList.contains('dalia-far-2')) {
+                img.style.filter = 'blur(12px) brightness(1.2)';
+            } else if (layer.classList.contains('dalia-far-3')) {
+                img.style.filter = 'blur(9px) brightness(1.15)';
+            } else if (layer.classList.contains('dalia-mid-1')) {
+                img.style.filter = 'blur(4px)';
+            } else if (layer.classList.contains('dalia-mid-2')) {
+                img.style.filter = 'blur(3px)';
+            } else if (layer.classList.contains('dalia-mid-3')) {
+                img.style.filter = 'blur(4px)';
+            } else if (layer.classList.contains('dalia-mid-4')) {
+                img.style.filter = 'blur(2px)';
+            } else {
+                img.style.filter = 'blur(1px)';
+            }
+            
+            img.style.zIndex = '1';
+            layer.style.zIndex = '';
+        });
+    });
+}
+
+// ============================================
+// HOVER EFFECTS - Botones
+// ============================================
+
+function initButtonHovers() {
+    // Botón Next
+    const nextButton = document.querySelector('.next-button');
+    if (nextButton) {
+        nextButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+            this.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.25)';
+            this.style.transition = 'all 0.3s ease';
+            
+            const icon = this.querySelector('.button-icon');
+            if (icon) {
+                icon.style.transform = 'rotate(90deg) scale(1.1)';
+                icon.style.transition = 'transform 0.3s ease';
+            }
+        });
+        
+        nextButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(-2px) scale(1)';
+            this.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+            
+            const icon = this.querySelector('.button-icon');
+            if (icon) {
+                icon.style.transform = 'rotate(0deg) scale(1)';
+            }
+        });
+    }
+    
+    // Botón de acción (action-button)
+    const actionButton = document.querySelector('.action-button');
+    if (actionButton) {
+        actionButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.15) rotate(5deg)';
+            this.style.background = 'rgba(255, 255, 255, 0.35)';
+            this.style.boxShadow = '0 4px 15px rgba(255, 255, 255, 0.4)';
+        });
+        
+        actionButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+            this.style.background = 'rgba(255, 255, 255, 0.2)';
+            this.style.boxShadow = 'none';
+        });
+    }
+    
+    // Selector de idioma
+    const languageSelector = document.querySelector('.language-selector');
+    if (languageSelector) {
+        languageSelector.addEventListener('mouseenter', function() {
+            this.style.opacity = '1';
+            this.style.transform = 'translateY(-2px)';
+            this.style.transition = 'all 0.3s ease';
+        });
+        
+        languageSelector.addEventListener('mouseleave', function() {
+            this.style.opacity = '0.8';
+            this.style.transform = 'translateY(0)';
+        });
+    }
+    
+    // Tarjetas del carrusel
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = this.classList.contains('card-center') 
+                ? 'scale(1.05) translateY(-5px)' 
+                : this.classList.contains('card-left')
+                    ? 'translateX(-25px) scale(0.95) translateY(-5px)'
+                    : 'translateX(25px) scale(0.95) translateY(-5px)';
+            this.style.boxShadow = '0 15px 50px rgba(0, 0, 0, 0.3)';
+            this.style.zIndex = '5';
+            this.style.transition = 'all 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = this.classList.contains('card-center') 
+                ? 'scale(1)' 
+                : this.classList.contains('card-left')
+                    ? 'translateX(-30px) scale(0.9)'
+                    : 'translateX(30px) scale(0.9)';
+            this.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.2)';
+            this.style.zIndex = '';
+        });
+    });
+}
+
 // Inicializar todas las animaciones cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar las rotaciones iniciales de las capas parallax
@@ -126,6 +266,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar parallax - efecto principal
     initParallaxEffect();
+    
+    // Inicializar efectos hover para imágenes parallax
+    initParallaxImageHovers();
+    
+    // Inicializar efectos hover para botones
+    initButtonHovers();
     
     // Animaciones suaves de entrada para los elementos
     const elements = document.querySelectorAll('.header, .content-container, .product-container, .footer, .ticket-graphic');

@@ -148,6 +148,8 @@ body {
     will-change: transform;
     transition: transform 0.6s ease-out;
     transform-origin: center center;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .parallax-container.active .parallax-layer {
@@ -356,8 +358,8 @@ body {
    ============================================ */
 .content-container {
     position: absolute;
-    top: 48%;
-    left: 48%;
+    top: 1%;
+    left: 10%;
     transform: translate(-50%, -50%);
     z-index: 5;
     width: 100%;
@@ -376,12 +378,53 @@ body {
 
 /* Carrusel de tarjetas */
 .cards-carousel {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 20px;
     perspective: 1000px;
     margin-bottom: 40px;
+    padding: 40px 60px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, 
+        rgba(138, 43, 226, 0.15) 0%, 
+        rgba(255, 20, 147, 0.15) 50%, 
+        rgba(255, 69, 0, 0.15) 100%);
+    box-shadow: 
+        0 0 60px rgba(138, 43, 226, 0.3),
+        0 0 100px rgba(255, 20, 147, 0.2),
+        inset 0 0 40px rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.cards-carousel::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, 
+        rgba(138, 43, 226, 0.4), 
+        rgba(255, 20, 147, 0.4), 
+        rgba(255, 69, 0, 0.4));
+    border-radius: 30px;
+    z-index: -1;
+    opacity: 0.6;
+    filter: blur(20px);
+    animation: pulseGlowCarousel 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlowCarousel {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.02);
+    }
 }
 
 .card {
@@ -445,6 +488,15 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+}
+
+.card-center .card-content {
+    background: linear-gradient(to bottom, rgba(255, 140, 0, 0.8) 0%, rgba(138, 43, 226, 0.8) 100%);
+}
+
+.card-left .card-content,
+.card-right .card-content {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
@@ -453,7 +505,7 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 12px;
-    color: #666;
+    color: #fff;
     margin-bottom: 12px;
 }
 
@@ -464,8 +516,16 @@ body {
 .card-text {
     font-size: 18px;
     font-weight: 600;
-    color: #333;
     line-height: 1.4;
+}
+
+.card-center .card-text {
+    color: #fff;
+}
+
+.card-left .card-text,
+.card-right .card-text {
+    color: #333;
 }
 
 /* Botón Next */
@@ -505,8 +565,8 @@ body {
    ============================================ */
 .product-container {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 30%;
+    left: 0%;
     transform: translate(-50%, -50%);
     z-index: 4;
     pointer-events: none;
