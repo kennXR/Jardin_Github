@@ -98,6 +98,12 @@ body {
     font-weight: 600;
     position: relative;
     transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-item span {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-item:hover {
@@ -110,6 +116,7 @@ body {
     border-radius: 50%;
     background: #ff4444;
     position: relative;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-dot::after {
@@ -177,6 +184,8 @@ body {
     background: white;
     border-radius: 1px;
     display: block;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
 }
 
 /* ============================================
@@ -199,6 +208,7 @@ body {
     transform: translate(-50%, -50%);
     width: 90%;
     max-width: 1200px;
+    will-change: transform;
 }
 
 .headline-line-1 {
@@ -225,6 +235,10 @@ body {
     line-height: 1;
     color: #000;
     letter-spacing: -0.03em;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
 }
 
 .headline-image-wrapper {
@@ -235,6 +249,8 @@ body {
     overflow: hidden;
     border-radius: 4px;
     margin: 0 10px;
+    cursor: pointer;
+    will-change: transform;
 }
 
 .headline-image {
@@ -249,6 +265,8 @@ body {
     color: #ff4444;
     flex-shrink: 0;
     margin-left: 20px;
+    cursor: pointer;
+    will-change: transform;
 }
 
 .person-illustration {
@@ -257,56 +275,107 @@ body {
 }
 
 /* ============================================
-   IMAGE STACK
+   DIAGONAL GALLERY
    ============================================ */
-.image-stack {
+.diagonal-gallery {
     position: absolute;
-    bottom: 80px;
-    left: 40px;
-    width: 300px;
-    height: 400px;
-    z-index: 20;
-}
-
-.stack-card {
-    position: absolute;
-    width: 280px;
-    height: 200px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.stack-card-1 {
-    transform: rotate(-5deg);
-    z-index: 3;
-}
-
-.stack-card-2 {
-    transform: rotate(3deg) translate(15px, 15px);
-    z-index: 2;
-    background: #ff4444;
-    opacity: 0.3;
-}
-
-.stack-card-3 {
-    transform: rotate(-2deg) translate(30px, 30px);
-    z-index: 1;
-    background: #ff4444;
-    opacity: 0.2;
-}
-
-.stack-image {
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    z-index: 5;
+    pointer-events: none;
     overflow: hidden;
 }
 
-.stack-image img {
+.diagonal-image {
+    position: absolute;
+    width: 180px;
+    height: 240px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    will-change: transform;
+    pointer-events: auto;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.4s ease,
+                z-index 0.4s ease;
+}
+
+.diagonal-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Diagonal pattern - from top-left to bottom-right */
+.diagonal-img-1 {
+    top: 10%;
+    left: 5%;
+    transform: rotate(-15deg) translate(0, 0);
+    z-index: 1;
+}
+
+.diagonal-img-2 {
+    top: 20%;
+    left: 18%;
+    transform: rotate(8deg) translate(0, 0);
+    z-index: 2;
+}
+
+.diagonal-img-3 {
+    top: 35%;
+    left: 30%;
+    transform: rotate(-10deg) translate(0, 0);
+    z-index: 3;
+}
+
+.diagonal-img-4 {
+    top: 50%;
+    left: 42%;
+    transform: rotate(12deg) translate(0, 0);
+    z-index: 4;
+}
+
+.diagonal-img-5 {
+    top: 65%;
+    left: 54%;
+    transform: rotate(-8deg) translate(0, 0);
+    z-index: 5;
+}
+
+.diagonal-img-6 {
+    top: 15%;
+    left: 65%;
+    transform: rotate(15deg) translate(0, 0);
+    z-index: 6;
+}
+
+.diagonal-img-7 {
+    top: 45%;
+    left: 75%;
+    transform: rotate(-12deg) translate(0, 0);
+    z-index: 7;
+}
+
+.diagonal-img-8 {
+    top: 70%;
+    left: 85%;
+    transform: rotate(10deg) translate(0, 0);
+    z-index: 8;
+}
+
+/* Hover effects */
+.diagonal-image:hover {
+    transform: rotate(0deg) scale(1.1) translateY(-10px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    z-index: 50;
+}
+
+.diagonal-image:hover img {
+    transform: scale(1.05);
 }
 
 /* ============================================
