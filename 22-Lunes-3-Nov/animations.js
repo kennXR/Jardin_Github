@@ -1,10 +1,10 @@
 // ============================================
-// UNTOLD STORIES - Animations
+// UNTOLD STORIES - Animaciones
 // Inspirado en untold.site
 // ============================================
 
 // ============================================
-// CURSOR FOLLOW EFFECT
+// EFECTO DE SEGUIMIENTO DEL CURSOR
 // ============================================
 
 function initCursorFollow() {
@@ -26,7 +26,7 @@ function initCursorFollow() {
         cursorX += (mouseX - cursorX) * 0.1;
         cursorY += (mouseY - cursorY) * 0.1;
 
-        // Parallax effect on headline elements
+        // Efecto parallax en los elementos del headline
         const headlineWords = document.querySelectorAll('.headline-word');
         const headlineImage = document.querySelector('.headline-image-wrapper');
         const headlineIllustration = document.querySelector('.headline-illustration');
@@ -38,7 +38,7 @@ function initCursorFollow() {
         const deltaX = (cursorX - centerX) / centerX;
         const deltaY = (cursorY - centerY) / centerY;
 
-        // Headline words subtle movement
+        // Movimiento sutil de las palabras del headline
         headlineWords.forEach((word, index) => {
             const intensity = (index + 1) * 0.3;
             const moveX = deltaX * intensity * 5;
@@ -46,21 +46,21 @@ function initCursorFollow() {
             word.style.transform = `translate(${moveX}px, ${moveY}px)`;
         });
 
-        // Headline image movement
+        // Movimiento de la imagen del headline
         if (headlineImage) {
             const moveX = deltaX * 8;
             const moveY = deltaY * 8;
             headlineImage.style.transform = `translate(${moveX}px, ${moveY}px)`;
         }
 
-        // Illustration movement
+        // Movimiento de la ilustración
         if (headlineIllustration) {
             const moveX = deltaX * -6;
             const moveY = deltaY * -6;
             headlineIllustration.style.transform = `translate(${moveX}px, ${moveY}px)`;
         }
 
-        // Diagonal images parallax movement - only when expanded
+        // Movimiento parallax de las imágenes diagonales - solo cuando están expandidas
         const diagonalGallery = document.getElementById('diagonalGallery');
         if (diagonalGallery && diagonalGallery.classList.contains('expanded')) {
             diagonalImages.forEach((img, index) => {
@@ -68,10 +68,10 @@ function initCursorFollow() {
                 const moveX = deltaX * intensity * 12;
                 const moveY = deltaY * intensity * 12;
                 
-                // Get base rotation from data attribute
+                // Obtener rotación base desde el atributo data
                 const baseRot = img.getAttribute('data-rotation') || '0';
                 
-                // Only apply parallax if not hovering (to avoid conflicts)
+                // Solo aplicar parallax si no está en hover (para evitar conflictos)
                 if (!img.matches(':hover')) {
                     img.style.transform = `rotate(${baseRot}deg) translate(${moveX}px, ${moveY}px)`;
                 }
@@ -85,7 +85,7 @@ function initCursorFollow() {
 }
 
 // ============================================
-// HEADLINE WORD INTERACTIONS
+// INTERACCIONES DE LAS PALABRAS DEL HEADLINE
 // ============================================
 
 function initHeadlineInteractions() {
@@ -103,7 +103,7 @@ function initHeadlineInteractions() {
         });
 
         word.addEventListener('click', function() {
-            // Add ripple effect
+            // Agregar efecto ripple (ondulación)
             const ripple = document.createElement('span');
             ripple.style.position = 'absolute';
             ripple.style.width = '20px';
@@ -125,7 +125,7 @@ function initHeadlineInteractions() {
         });
     });
 
-    // Add ripple animation to CSS dynamically
+    // Agregar animación ripple al CSS dinámicamente
     if (!document.querySelector('#ripple-style')) {
         const style = document.createElement('style');
         style.id = 'ripple-style';
@@ -142,7 +142,7 @@ function initHeadlineInteractions() {
 }
 
 // ============================================
-// HEADLINE IMAGE INTERACTIONS
+// INTERACCIONES DE LA IMAGEN DEL HEADLINE
 // ============================================
 
 function initHeadlineImageInteractions() {
@@ -173,7 +173,7 @@ function initHeadlineImageInteractions() {
 }
 
 // ============================================
-// ILLUSTRATION INTERACTIONS
+// INTERACCIONES DE LA ILUSTRACIÓN
 // ============================================
 
 function initIllustrationInteractions() {
@@ -202,7 +202,7 @@ function initIllustrationInteractions() {
 }
 
 // ============================================
-// DIAGONAL IMAGES INTERACTIONS
+// INTERACCIONES DE LAS IMÁGENES DIAGONALES
 // ============================================
 
 function initDiagonalImageInteractions() {
@@ -210,18 +210,18 @@ function initDiagonalImageInteractions() {
     const diagonalImages = document.querySelectorAll('.diagonal-image');
     
     if (!diagonalGallery) {
-        console.warn('Diagonal gallery not found');
+        console.warn('Galería diagonal no encontrada');
         return;
     }
     
     if (diagonalImages.length === 0) {
-        console.warn('No diagonal images found');
+        console.warn('No se encontraron imágenes diagonales');
         return;
     }
     
-    console.log(`Initializing interactions for ${diagonalImages.length} images`);
+    console.log(`Inicializando interacciones para ${diagonalImages.length} imágenes`);
     
-    // Map rotations from CSS classes
+    // Mapeo de rotaciones desde las clases CSS
     const rotations = {
         'diagonal-img-1': '-15',
         'diagonal-img-2': '8',
@@ -233,7 +233,7 @@ function initDiagonalImageInteractions() {
         'diagonal-img-8': '10'
     };
     
-    // Store initial rotations
+    // Almacenar rotaciones iniciales
     diagonalImages.forEach(img => {
         const classList = Array.from(img.classList);
         const imgClass = classList.find(c => c.startsWith('diagonal-img-'));
@@ -244,43 +244,97 @@ function initDiagonalImageInteractions() {
         }
     });
     
-    // Click to expand/collapse
+    // Click para expandir/colapsar
     diagonalImages.forEach((img, index) => {
-        // Ensure pointer events are enabled
+        // Asegurar que los pointer events estén habilitados
         img.style.pointerEvents = 'auto';
         img.style.cursor = 'pointer';
         
         img.addEventListener('click', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            console.log('Image clicked, index:', index);
+            console.log('Imagen clickeada, índice:', index);
             
             if (!diagonalGallery.classList.contains('expanded')) {
-                // Expand - deploy images
+                // Expandir - desplegar imágenes en trayectorias diagonales
                 diagonalGallery.classList.add('expanded');
                 
-                // Add stagger delay for smooth animation
+                // Obtener posición inicial (inferior izquierda)
+                const startBottom = '20%';
+                const startLeft = '8%';
+                
+                // Posiciones finales desde CSS
+                const finalPositions = [
+                    { top: '10%', left: '5%', rotate: '-15deg' },
+                    { top: '20%', left: '18%', rotate: '8deg' },
+                    { top: '35%', left: '30%', rotate: '-10deg' },
+                    { top: '50%', left: '42%', rotate: '12deg' },
+                    { top: '65%', left: '54%', rotate: '-8deg' },
+                    { top: '15%', left: '65%', rotate: '15deg' },
+                    { top: '45%', left: '75%', rotate: '-12deg' },
+                    { top: '70%', left: '85%', rotate: '10deg' }
+                ];
+                
+                // Agregar retraso escalonado para animación suave
                 diagonalImages.forEach((img, idx) => {
-                    // Set transition for all properties including size
-                    img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
+                    const finalPos = finalPositions[idx] || { top: '50%', left: '50%', rotate: '0deg' };
                     
-                    // Ensure images return to full size
+                    // Calcular dirección desde inicio (inferior izquierda ~8%, 20%) hacia posición final
+                    // Convertir porcentajes a píxeles aproximados para cálculo (asumiendo 1440px ancho, 750px alto)
+                    const startX = 1440 * 0.08; // 8% del ancho
+                    const startY = 750 * (1 - 0.20); // 20% desde abajo = 80% desde arriba
+                    
+                    const finalXPercent = parseFloat(finalPos.left) / 100;
+                    const finalYPercent = parseFloat(finalPos.top) / 100;
+                    const finalX = 1440 * finalXPercent;
+                    const finalY = 750 * finalYPercent;
+                    
+                    // Calcular ángulo y distancia para trayectoria diagonal
+                    const deltaX = finalX - startX;
+                    const deltaY = finalY - startY;
+                    const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    
+                    // Distancia de lanzamiento: ir 30% más lejos en dirección diagonal para efecto dramático
+                    const launchDistance = distance * 0.3;
+                    const launchAngleRad = angle * Math.PI / 180;
+                    const launchX = Math.cos(launchAngleRad) * launchDistance;
+                    const launchY = Math.sin(launchAngleRad) * launchDistance;
+                    
+                    // Paso 1: Lanzar en dirección diagonal (instantáneo)
+                    img.style.transition = 'none';
+                    img.style.width = '140px';
+                    img.style.height = '190px';
+                    img.style.bottom = startBottom;
+                    img.style.left = startLeft;
+                    img.style.top = 'auto';
+                    img.style.transform = `translate(${launchX}px, ${-launchY}px) rotate(${angle + 15}deg) scale(0.85)`;
+                    
+                    // Forzar reflow
+                    img.offsetHeight;
+                    
+                    // Paso 2: Animar hacia posición final con arco diagonal suave
                     setTimeout(() => {
+                        img.style.transition = 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.9s ease, height 0.9s ease, top 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), left 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 1.2s ease, opacity 0.8s ease';
                         img.style.width = '180px';
                         img.style.height = '240px';
                         img.style.border = 'none';
-                    }, idx * 50);
+                        img.style.bottom = 'auto';
+                        img.style.top = finalPos.top;
+                        img.style.left = finalPos.left;
+                        img.style.transform = `rotate(${finalPos.rotate}) translate(0, 0) scale(1)`;
+                    }, idx * 100 + 100);
                 });
             } else {
-                // Collapse - return to grouped state
+                // Colapsar - volver al estado agrupado
                 diagonalGallery.classList.remove('expanded');
                 
-                // Add stagger delay for smooth collapse
+                // Agregar retraso escalonado para colapso suave
                 diagonalImages.forEach((img, idx) => {
-                    // Set transition for all properties including size
+                    // Establecer transición para todas las propiedades incluyendo tamaño
                     img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
                     
-                    // Return to small size and bottom-left position
+                    // Volver a tamaño pequeño y posición inferior izquierda
                     setTimeout(() => {
                         img.style.width = '140px';
                         img.style.height = '190px';
@@ -288,7 +342,7 @@ function initDiagonalImageInteractions() {
                         img.style.left = '8%';
                         img.style.top = 'auto';
                         
-                        // Add border back to first image
+                        // Agregar borde de vuelta a la primera imagen
                         if (idx === 0) {
                             img.style.border = '2px solid #ff4444';
                         } else {
@@ -300,18 +354,18 @@ function initDiagonalImageInteractions() {
         });
     });
     
-    // Hover effects - both when grouped and expanded
+    // Efectos hover - tanto cuando están agrupadas como expandidas
     diagonalImages.forEach((img, index) => {
         const baseRotation = img.getAttribute('data-rotation') || '0';
         
-        // Ensure pointer events and cursor
+        // Asegurar pointer events y cursor
         img.style.pointerEvents = 'auto';
         img.style.cursor = 'pointer';
         
         img.addEventListener('mouseenter', function() {
-            console.log('Mouse enter on image:', index);
+            console.log('Mouse entró en imagen:', index);
             if (diagonalGallery.classList.contains('expanded')) {
-                // Hover when expanded
+                // Hover cuando está expandida
                 this.style.transform = `rotate(0deg) scale(1.15) translateY(-15px)`;
                 this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, z-index 0.4s ease';
                 this.style.zIndex = '50';
@@ -322,7 +376,7 @@ function initDiagonalImageInteractions() {
                     imgElement.style.transform = 'scale(1.1)';
                 }
             } else {
-                // Hover when grouped - more visible interaction
+                // Hover cuando está agrupada - interacción más visible
                 this.style.transform = 'translate(0, -8px) rotate(0deg) scale(1.08)';
                 this.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, z-index 0.3s ease';
                 this.style.zIndex = '25';
@@ -339,7 +393,7 @@ function initDiagonalImageInteractions() {
 
         img.addEventListener('mouseleave', function() {
             if (diagonalGallery.classList.contains('expanded')) {
-                // Restore when expanded
+                // Restaurar cuando está expandida
                 this.style.transform = `rotate(${baseRotation}deg) scale(1) translateY(0)`;
                 this.style.zIndex = (index + 1).toString();
                 this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
@@ -349,7 +403,7 @@ function initDiagonalImageInteractions() {
                     imgElement.style.transform = 'scale(1)';
                 }
             } else {
-                // Restore when grouped
+                // Restaurar cuando está agrupada
                 const transforms = [
                     { translate: 'translate(0, 0)', rotate: '-5deg' },
                     { translate: 'translate(12px, -8px)', rotate: '3deg' },
@@ -374,17 +428,17 @@ function initDiagonalImageInteractions() {
         });
     });
     
-    // Click outside to collapse
+    // Click fuera para colapsar
     document.addEventListener('click', function(e) {
         if (diagonalGallery.classList.contains('expanded')) {
             const clickedInside = diagonalGallery.contains(e.target);
             const clickedOnImage = e.target.closest('.diagonal-image');
             
-            // Only collapse if clicked outside the gallery (not on images)
+            // Solo colapsar si se hace click fuera de la galería (no en las imágenes)
             if (!clickedInside && !clickedOnImage) {
                 diagonalGallery.classList.remove('expanded');
                 
-                // Animate collapse
+                // Animar colapso
                 diagonalImages.forEach((img, idx) => {
                     img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
                     
@@ -406,11 +460,11 @@ function initDiagonalImageInteractions() {
         }
     });
     
-    console.log('Diagonal image interactions initialized successfully');
+    console.log('Interacciones de imágenes diagonales inicializadas exitosamente');
 }
 
 // ============================================
-// CTA BUTTON INTERACTIONS
+// INTERACCIONES DEL BOTÓN CTA
 // ============================================
 
 function initCTAInteractions() {
@@ -448,7 +502,7 @@ function initCTAInteractions() {
 }
 
 // ============================================
-// NAVIGATION INTERACTIONS
+// INTERACCIONES DE NAVEGACIÓN
 // ============================================
 
 function initNavigationInteractions() {
@@ -462,7 +516,7 @@ function initNavigationInteractions() {
                 letter.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
             }
             
-            // Move dot if active
+            // Mover punto si está activo
             const dot = this.querySelector('.nav-dot');
             if (dot && this.classList.contains('active')) {
                 dot.style.transform = 'scale(1.3)';
@@ -482,18 +536,18 @@ function initNavigationInteractions() {
             }
         });
 
-        // Click to activate
+        // Click para activar
         item.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Remove active from all
+            // Remover active de todos
             navItems.forEach(nav => nav.classList.remove('active'));
             navItems.forEach(nav => {
                 const dot = nav.querySelector('.nav-dot');
                 if (dot) dot.style.display = 'none';
             });
             
-            // Add active to clicked
+            // Agregar active al clickeado
             this.classList.add('active');
             const dot = this.querySelector('.nav-dot');
             if (!dot) {
@@ -508,7 +562,7 @@ function initNavigationInteractions() {
 }
 
 // ============================================
-// LANGUAGE SELECTOR INTERACTIONS
+// INTERACCIONES DEL SELECTOR DE IDIOMA
 // ============================================
 
 function initLanguageSelectorInteractions() {
@@ -545,7 +599,7 @@ function initLanguageSelectorInteractions() {
         e.preventDefault();
         isOpen = !isOpen;
         
-        // Toggle language (simple toggle for demo)
+        // Alternar idioma (toggle simple para demo)
         const span = this.querySelector('span');
         if (span) {
             span.textContent = isOpen ? '(ES)' : '(EN)';
@@ -554,7 +608,7 @@ function initLanguageSelectorInteractions() {
     }
     
 // ============================================
-// HAMBURGER BUTTON INTERACTIONS
+// INTERACCIONES DEL BOTÓN HAMBURGUESA
 // ============================================
 
 function initHamburgerInteractions() {
@@ -579,13 +633,13 @@ function initHamburgerInteractions() {
         
         const spans = this.querySelectorAll('span');
         if (isOpen) {
-            // Transform to X
+            // Transformar a X
             this.style.transform = 'scale(1.1) rotate(90deg)';
             spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
             spans[1].style.opacity = '0';
             spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
         } else {
-            // Back to hamburger
+            // Volver a hamburguesa
             this.style.transform = 'scale(1) rotate(0deg)';
             spans[0].style.transform = 'rotate(0deg) translate(0, 0)';
             spans[1].style.opacity = '1';
@@ -599,7 +653,7 @@ function initHamburgerInteractions() {
 }
 
 // ============================================
-// SCROLL INDICATOR INTERACTIONS
+// INTERACCIONES DEL INDICADOR DE SCROLL
 // ============================================
 
 function initScrollIndicatorInteractions() {
@@ -608,7 +662,7 @@ function initScrollIndicatorInteractions() {
     
     if (!scrollArrow || !scrollIndicator) return;
 
-    // Animate arrow
+    // Animar flecha
     function animateArrow() {
         scrollArrow.style.transform = 'translateY(0)';
         scrollArrow.style.transition = 'transform 0.6s ease-in-out';
@@ -640,7 +694,7 @@ function initScrollIndicatorInteractions() {
 }
 
 // ============================================
-// SMOOTH FADE IN ANIMATIONS
+// ANIMACIONES DE ENTRADA SUAVES
 // ============================================
 
 function initFadeInAnimations() {
@@ -659,20 +713,20 @@ function initFadeInAnimations() {
             element.style.opacity = '0';
             element.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
             
-            // Set initial transform based on element
+            // Establecer transformación inicial basada en el elemento
             if (selector === '.scroll-indicator') {
                 element.style.transform = 'translateY(-50%) translateX(30px)';
             } else if (selector === '.headline-container') {
                 element.style.transform = 'translate(-50%, -50%) translateY(40px)';
             } else if (selector === '.diagonal-gallery') {
-                // Show gallery container first
+                // Mostrar contenedor de galería primero
                 element.style.opacity = '1';
                 
-                // Then animate each image individually with stagger
+                // Luego animar cada imagen individualmente con escalonamiento
                 const diagonalImages = element.querySelectorAll('.diagonal-image');
                 
                 diagonalImages.forEach((img, idx) => {
-                    // Start hidden and scaled down at bottom-left position
+                    // Comenzar oculta y escalada en posición inferior izquierda
                     img.style.opacity = '0';
                     img.style.bottom = '20%';
                     img.style.left = '8%';
@@ -682,9 +736,9 @@ function initFadeInAnimations() {
                     img.style.transform = 'translate(0, 20px) rotate(0deg) scale(0.5)';
                     img.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.8s ease, height 0.8s ease';
                     
-                    // Animate to grouped state with stagger (bottom-left stack)
+                    // Animar a estado agrupado con escalonamiento (pila inferior izquierda)
                     setTimeout(() => {
-                        // Different transforms for each image to create stacked effect
+                        // Diferentes transformaciones para cada imagen para crear efecto de pila
                         const transforms = [
                             { translate: 'translate(0, 0)', rotate: '-5deg' },
                             { translate: 'translate(12px, -8px)', rotate: '3deg' },
@@ -704,14 +758,14 @@ function initFadeInAnimations() {
                         img.style.height = '190px';
                         img.style.transform = `${transform.translate} rotate(${transform.rotate}) scale(1)`;
                         
-                        // Add border to first image
+                        // Agregar borde a la primera imagen
                         if (idx === 0) {
                             img.style.border = '2px solid #ff4444';
                         }
                     }, delay + (idx * 60));
                 });
                 
-                // Don't animate the gallery container itself
+                // No animar el contenedor de la galería en sí
                 return;
             } else if (selector === '.explanatory-text') {
                 element.style.transform = 'translateX(40px)';
@@ -736,11 +790,11 @@ function initFadeInAnimations() {
 }
 
 // ============================================
-// INITIALIZATION
+// INICIALIZACIÓN
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all interactions
+    // Inicializar todas las interacciones
     initCursorFollow();
     initHeadlineInteractions();
     initHeadlineImageInteractions();
@@ -753,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollIndicatorInteractions();
     initFadeInAnimations();
     
-    // Add smooth transitions to headline words
+    // Agregar transiciones suaves a las palabras del headline
     const headlineWords = document.querySelectorAll('.headline-word');
     headlineWords.forEach(word => {
         word.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';

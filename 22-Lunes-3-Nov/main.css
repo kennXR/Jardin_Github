@@ -302,14 +302,17 @@ body {
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    will-change: transform;
+    will-change: transform, top, left, bottom, width, height;
     pointer-events: auto;
-    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
+    transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                 box-shadow 0.4s ease,
                 z-index 0.4s ease,
                 opacity 0.6s ease,
                 width 0.8s ease,
-                height 0.8s ease;
+                height 0.8s ease,
+                top 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                left 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                bottom 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .diagonal-image img {
