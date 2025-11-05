@@ -10,7 +10,7 @@
 function initCursorFollow() {
     const stage = document.querySelector('.stage');
     if (!stage) return;
-
+    
     let mouseX = 0;
     let mouseY = 0;
     let cursorX = 0;
@@ -60,42 +60,23 @@ function initCursorFollow() {
             headlineIllustration.style.transform = `translate(${moveX}px, ${moveY}px)`;
         }
 
-        // Diagonal images parallax movement
-        diagonalImages.forEach((img, index) => {
-            const intensity = (index % 4) * 0.5 + 0.5;
-            const moveX = deltaX * intensity * 12;
-            const moveY = deltaY * intensity * 12;
-            
-            // Get base rotation from data attribute or CSS class
-            let baseRot = img.getAttribute('data-rotation');
-            if (!baseRot) {
-                // Extract rotation from class name (e.g., diagonal-img-1 has rotate(-15deg) in CSS)
-                const classList = Array.from(img.classList);
-                const imgClass = classList.find(c => c.startsWith('diagonal-img-'));
-                if (imgClass) {
-                    // Map to rotation values from CSS
-                    const rotations = {
-                        'diagonal-img-1': '-15',
-                        'diagonal-img-2': '8',
-                        'diagonal-img-3': '-10',
-                        'diagonal-img-4': '12',
-                        'diagonal-img-5': '-8',
-                        'diagonal-img-6': '15',
-                        'diagonal-img-7': '-12',
-                        'diagonal-img-8': '10'
-                    };
-                    baseRot = rotations[imgClass] || '0';
-                    img.setAttribute('data-rotation', baseRot);
-                } else {
-                    baseRot = '0';
+        // Diagonal images parallax movement - only when expanded
+        const diagonalGallery = document.getElementById('diagonalGallery');
+        if (diagonalGallery && diagonalGallery.classList.contains('expanded')) {
+            diagonalImages.forEach((img, index) => {
+                const intensity = (index % 4) * 0.5 + 0.5;
+                const moveX = deltaX * intensity * 12;
+                const moveY = deltaY * intensity * 12;
+                
+                // Get base rotation from data attribute
+                const baseRot = img.getAttribute('data-rotation') || '0';
+                
+                // Only apply parallax if not hovering (to avoid conflicts)
+                if (!img.matches(':hover')) {
+                    img.style.transform = `rotate(${baseRot}deg) translate(${moveX}px, ${moveY}px)`;
                 }
-            }
-            
-            // Only apply parallax if not hovering (to avoid conflicts)
-            if (!img.matches(':hover')) {
-                img.style.transform = `rotate(${baseRot}deg) translate(${moveX}px, ${moveY}px)`;
-            }
-        });
+            });
+        }
 
         requestAnimationFrame(animateCursor);
     }
@@ -225,7 +206,20 @@ function initIllustrationInteractions() {
 // ============================================
 
 function initDiagonalImageInteractions() {
+    const diagonalGallery = document.getElementById('diagonalGallery');
     const diagonalImages = document.querySelectorAll('.diagonal-image');
+    
+    if (!diagonalGallery) {
+        console.warn('Diagonal gallery not found');
+        return;
+    }
+    
+    if (diagonalImages.length === 0) {
+        console.warn('No diagonal images found');
+        return;
+    }
+    
+    console.log(`Initializing interactions for ${diagonalImages.length} images`);
     
     // Map rotations from CSS classes
     const rotations = {
@@ -250,40 +244,169 @@ function initDiagonalImageInteractions() {
         }
     });
     
+    // Click to expand/collapse
+    diagonalImages.forEach((img, index) => {
+        // Ensure pointer events are enabled
+        img.style.pointerEvents = 'auto';
+        img.style.cursor = 'pointer';
+        
+        img.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            console.log('Image clicked, index:', index);
+            
+            if (!diagonalGallery.classList.contains('expanded')) {
+                // Expand - deploy images
+                diagonalGallery.classList.add('expanded');
+                
+                // Add stagger delay for smooth animation
+                diagonalImages.forEach((img, idx) => {
+                    // Set transition for all properties including size
+                    img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
+                    
+                    // Ensure images return to full size
+                    setTimeout(() => {
+                        img.style.width = '180px';
+                        img.style.height = '240px';
+                        img.style.border = 'none';
+                    }, idx * 50);
+                });
+            } else {
+                // Collapse - return to grouped state
+                diagonalGallery.classList.remove('expanded');
+                
+                // Add stagger delay for smooth collapse
+                diagonalImages.forEach((img, idx) => {
+                    // Set transition for all properties including size
+                    img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
+                    
+                    // Return to small size and bottom-left position
+                    setTimeout(() => {
+                        img.style.width = '140px';
+                        img.style.height = '190px';
+                        img.style.bottom = '20%';
+                        img.style.left = '8%';
+                        img.style.top = 'auto';
+                        
+                        // Add border back to first image
+                        if (idx === 0) {
+                            img.style.border = '2px solid #ff4444';
+                        } else {
+                            img.style.border = 'none';
+                        }
+                    }, idx * 30);
+                });
+            }
+        });
+    });
+    
+    // Hover effects - both when grouped and expanded
     diagonalImages.forEach((img, index) => {
         const baseRotation = img.getAttribute('data-rotation') || '0';
         
+        // Ensure pointer events and cursor
+        img.style.pointerEvents = 'auto';
+        img.style.cursor = 'pointer';
+        
         img.addEventListener('mouseenter', function() {
-            this.style.transform = `rotate(0deg) scale(1.15) translateY(-15px)`;
-            this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, z-index 0.4s ease';
-            this.style.zIndex = '50';
-            this.style.boxShadow = '0 15px 50px rgba(0, 0, 0, 0.3)';
-            
-            const imgElement = this.querySelector('img');
-            if (imgElement) {
-                imgElement.style.transform = 'scale(1.1)';
+            console.log('Mouse enter on image:', index);
+            if (diagonalGallery.classList.contains('expanded')) {
+                // Hover when expanded
+                this.style.transform = `rotate(0deg) scale(1.15) translateY(-15px)`;
+                this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, z-index 0.4s ease';
+                this.style.zIndex = '50';
+                this.style.boxShadow = '0 15px 50px rgba(0, 0, 0, 0.3)';
+                
+                const imgElement = this.querySelector('img');
+                if (imgElement) {
+                    imgElement.style.transform = 'scale(1.1)';
+                }
+            } else {
+                // Hover when grouped - more visible interaction
+                this.style.transform = 'translate(0, -8px) rotate(0deg) scale(1.08)';
+                this.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, z-index 0.3s ease';
+                this.style.zIndex = '25';
+                this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.35)';
+                this.style.cursor = 'pointer';
+                
+                const imgElement = this.querySelector('img');
+                if (imgElement) {
+                    imgElement.style.filter = 'brightness(1.1)';
+                    imgElement.style.transition = 'filter 0.3s ease';
+                }
             }
         });
 
         img.addEventListener('mouseleave', function() {
-            this.style.transform = `rotate(${baseRotation}) scale(1) translateY(0)`;
-            this.style.zIndex = (index + 1).toString();
-            this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-            
-            const imgElement = this.querySelector('img');
-            if (imgElement) {
-                imgElement.style.transform = 'scale(1)';
+            if (diagonalGallery.classList.contains('expanded')) {
+                // Restore when expanded
+                this.style.transform = `rotate(${baseRotation}deg) scale(1) translateY(0)`;
+                this.style.zIndex = (index + 1).toString();
+                this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+                
+                const imgElement = this.querySelector('img');
+                if (imgElement) {
+                    imgElement.style.transform = 'scale(1)';
+                }
+            } else {
+                // Restore when grouped
+                const transforms = [
+                    { translate: 'translate(0, 0)', rotate: '-5deg' },
+                    { translate: 'translate(12px, -8px)', rotate: '3deg' },
+                    { translate: 'translate(24px, -16px)', rotate: '-2deg' },
+                    { translate: 'translate(8px, 8px)', rotate: '4deg' },
+                    { translate: 'translate(20px, 4px)', rotate: '-3deg' },
+                    { translate: 'translate(16px, -12px)', rotate: '2deg' },
+                    { translate: 'translate(28px, -4px)', rotate: '-4deg' },
+                    { translate: 'translate(32px, 0px)', rotate: '3deg' }
+                ];
+                
+                const transform = transforms[index] || { translate: 'translate(0, 0)', rotate: '0deg' };
+                this.style.transform = `${transform.translate} rotate(${transform.rotate}) scale(1)`;
+                this.style.zIndex = index === 0 ? '24' : (24 - index).toString();
+                this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+                
+                const imgElement = this.querySelector('img');
+                if (imgElement) {
+                    imgElement.style.filter = 'brightness(1)';
+                }
             }
         });
-
-        // Click interaction
-        img.addEventListener('click', function() {
-            this.style.transform = `rotate(0deg) scale(1.05) translateY(-5px)`;
-            setTimeout(() => {
-                this.style.transform = `rotate(${baseRotation}) scale(1) translateY(0)`;
-            }, 200);
-        });
     });
+    
+    // Click outside to collapse
+    document.addEventListener('click', function(e) {
+        if (diagonalGallery.classList.contains('expanded')) {
+            const clickedInside = diagonalGallery.contains(e.target);
+            const clickedOnImage = e.target.closest('.diagonal-image');
+            
+            // Only collapse if clicked outside the gallery (not on images)
+            if (!clickedInside && !clickedOnImage) {
+                diagonalGallery.classList.remove('expanded');
+                
+                // Animate collapse
+                diagonalImages.forEach((img, idx) => {
+                    img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
+                    
+                    setTimeout(() => {
+                        img.style.width = '140px';
+                        img.style.height = '190px';
+                        img.style.bottom = '20%';
+                        img.style.left = '8%';
+                        img.style.top = 'auto';
+                        
+                        if (idx === 0) {
+                            img.style.border = '2px solid #ff4444';
+                        } else {
+                            img.style.border = 'none';
+                        }
+                    }, idx * 30);
+                });
+            }
+        }
+    });
+    
+    console.log('Diagonal image interactions initialized successfully');
 }
 
 // ============================================
@@ -397,8 +520,8 @@ function initLanguageSelectorInteractions() {
     languageSelector.addEventListener('mouseenter', function() {
         this.style.opacity = '0.8';
         this.style.transform = 'translateY(-2px)';
-        this.style.transition = 'all 0.3s ease';
-        
+            this.style.transition = 'all 0.3s ease';
+            
         const chevron = this.querySelector('.chevron');
         if (chevron) {
             chevron.style.transform = 'rotate(180deg)';
@@ -426,10 +549,10 @@ function initLanguageSelectorInteractions() {
         const span = this.querySelector('span');
         if (span) {
             span.textContent = isOpen ? '(ES)' : '(EN)';
-        }
-    });
-}
-
+            }
+        });
+    }
+    
 // ============================================
 // HAMBURGER BUTTON INTERACTIONS
 // ============================================
@@ -500,9 +623,9 @@ function initScrollIndicatorInteractions() {
     scrollArrow.addEventListener('mouseenter', function() {
         this.style.transform = 'translateY(5px) scale(1.1)';
         this.style.background = 'rgba(255, 68, 68, 0.9)';
-        this.style.transition = 'all 0.3s ease';
-    });
-
+            this.style.transition = 'all 0.3s ease';
+        });
+        
     scrollArrow.addEventListener('mouseleave', function() {
         this.style.transform = 'translateY(0) scale(1)';
         this.style.background = '#ff4444';
@@ -524,7 +647,7 @@ function initFadeInAnimations() {
     const elements = [
         { selector: '.header', delay: 0 },
         { selector: '.headline-container', delay: 200 },
-        { selector: '.diagonal-gallery', delay: 400 },
+        { selector: '.diagonal-gallery', delay: 300 },
         { selector: '.explanatory-text', delay: 600 },
         { selector: '.cta-button', delay: 800 },
         { selector: '.scroll-indicator', delay: 1000 }
@@ -542,35 +665,54 @@ function initFadeInAnimations() {
             } else if (selector === '.headline-container') {
                 element.style.transform = 'translate(-50%, -50%) translateY(40px)';
             } else if (selector === '.diagonal-gallery') {
-                // Stagger animation for diagonal images
+                // Show gallery container first
+                element.style.opacity = '1';
+                
+                // Then animate each image individually with stagger
                 const diagonalImages = element.querySelectorAll('.diagonal-image');
-                const rotations = {
-                    'diagonal-img-1': '-15',
-                    'diagonal-img-2': '8',
-                    'diagonal-img-3': '-10',
-                    'diagonal-img-4': '12',
-                    'diagonal-img-5': '-8',
-                    'diagonal-img-6': '15',
-                    'diagonal-img-7': '-12',
-                    'diagonal-img-8': '10'
-                };
                 
                 diagonalImages.forEach((img, idx) => {
-                    const classList = Array.from(img.classList);
-                    const imgClass = classList.find(c => c.startsWith('diagonal-img-'));
-                    const baseRot = (imgClass && rotations[imgClass]) ? rotations[imgClass] : '0';
-                    
+                    // Start hidden and scaled down at bottom-left position
                     img.style.opacity = '0';
-                    img.style.transform = `rotate(${baseRot}deg) scale(0.8) translateY(30px)`;
-                    img.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    img.style.bottom = '20%';
+                    img.style.left = '8%';
+                    img.style.top = 'auto';
+                    img.style.width = '140px';
+                    img.style.height = '190px';
+                    img.style.transform = 'translate(0, 20px) rotate(0deg) scale(0.5)';
+                    img.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.8s ease, height 0.8s ease';
                     
+                    // Animate to grouped state with stagger (bottom-left stack)
                     setTimeout(() => {
-                        img.style.opacity = '1';
-                        img.style.transform = `rotate(${baseRot}deg) scale(1) translateY(0)`;
-                        img.setAttribute('data-rotation', baseRot);
-                    }, delay + (idx * 100));
+                        // Different transforms for each image to create stacked effect
+                        const transforms = [
+                            { translate: 'translate(0, 0)', rotate: '-5deg' },
+                            { translate: 'translate(12px, -8px)', rotate: '3deg' },
+                            { translate: 'translate(24px, -16px)', rotate: '-2deg' },
+                            { translate: 'translate(8px, 8px)', rotate: '4deg' },
+                            { translate: 'translate(20px, 4px)', rotate: '-3deg' },
+                            { translate: 'translate(16px, -12px)', rotate: '2deg' },
+                            { translate: 'translate(28px, -4px)', rotate: '-4deg' },
+                            { translate: 'translate(32px, 0px)', rotate: '3deg' }
+                        ];
+                        
+                        const transform = transforms[idx] || { translate: 'translate(0, 0)', rotate: '0deg' };
+                        const opacity = idx === 0 ? '0.95' : (idx < 3 ? '0.95' : (idx < 4 ? '0.3' : '0.2'));
+                        
+                        img.style.opacity = opacity;
+                        img.style.width = '140px';
+                        img.style.height = '190px';
+                        img.style.transform = `${transform.translate} rotate(${transform.rotate}) scale(1)`;
+                        
+                        // Add border to first image
+                        if (idx === 0) {
+                            img.style.border = '2px solid #ff4444';
+                        }
+                    }, delay + (idx * 60));
                 });
-                return; // Skip default animation for gallery
+                
+                // Don't animate the gallery container itself
+                return;
             } else if (selector === '.explanatory-text') {
                 element.style.transform = 'translateX(40px)';
             } else if (selector === '.cta-button') {
@@ -579,7 +721,7 @@ function initFadeInAnimations() {
                 element.style.transform = 'translateY(-20px)';
             }
             
-            setTimeout(() => {
+        setTimeout(() => {
                 element.style.opacity = '1';
                 element.style.transform = selector === '.scroll-indicator' 
                     ? 'translateY(-50%) translateX(0)' 
