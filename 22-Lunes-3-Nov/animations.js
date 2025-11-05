@@ -60,23 +60,7 @@ function initCursorFollow() {
             headlineIllustration.style.transform = `translate(${moveX}px, ${moveY}px)`;
         }
 
-        // Movimiento parallax de las imágenes diagonales - solo cuando están expandidas
-        const diagonalGallery = document.getElementById('diagonalGallery');
-        if (diagonalGallery && diagonalGallery.classList.contains('expanded')) {
-            diagonalImages.forEach((img, index) => {
-                const intensity = (index % 4) * 0.5 + 0.5;
-                const moveX = deltaX * intensity * 12;
-                const moveY = deltaY * intensity * 12;
-                
-                // Obtener rotación base desde el atributo data
-                const baseRot = img.getAttribute('data-rotation') || '0';
-                
-                // Solo aplicar parallax si no está en hover (para evitar conflictos)
-                if (!img.matches(':hover')) {
-                    img.style.transform = `rotate(${baseRot}deg) translate(${moveX}px, ${moveY}px)`;
-                }
-            });
-        }
+        // Las imágenes diagonales se mantienen estáticas cuando están expandidas (sin parallax)
 
         requestAnimationFrame(animateCursor);
     }
@@ -221,16 +205,21 @@ function initDiagonalImageInteractions() {
     
     console.log(`Inicializando interacciones para ${diagonalImages.length} imágenes`);
     
+    // Asegurar que todas las imágenes tengan pointer-events habilitados antes de agregar listeners
+    diagonalImages.forEach((img, idx) => {
+        img.style.pointerEvents = 'auto';
+        img.style.cursor = 'pointer';
+        img.style.zIndex = (5 - idx).toString();
+        console.log(`Imagen ${idx} configurada:`, img.style.pointerEvents, img.style.cursor);
+    });
+    
     // Mapeo de rotaciones desde las clases CSS
     const rotations = {
         'diagonal-img-1': '-15',
         'diagonal-img-2': '8',
         'diagonal-img-3': '-10',
         'diagonal-img-4': '12',
-        'diagonal-img-5': '-8',
-        'diagonal-img-6': '15',
-        'diagonal-img-7': '-12',
-        'diagonal-img-8': '10'
+        'diagonal-img-5': '10'
     };
     
     // Almacenar rotaciones iniciales
@@ -244,114 +233,120 @@ function initDiagonalImageInteractions() {
         }
     });
     
-    // Click para expandir/colapsar
-    diagonalImages.forEach((img, index) => {
-        // Asegurar que los pointer events estén habilitados
-        img.style.pointerEvents = 'auto';
-        img.style.cursor = 'pointer';
+    // Función para expandir todas las imágenes al mismo tiempo
+    function expandImages() {
+        if (diagonalGallery.classList.contains('expanded')) return;
         
-        img.addEventListener('click', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            console.log('Imagen clickeada, índice:', index);
+        // Posiciones finales desde CSS (5 imágenes - debajo del texto)
+        const finalPositions = [
+            { top: '55%', left: '25%', rotate: '-15deg' },
+            { top: '60%', left: '32%', rotate: '8deg' },
+            { top: '65%', left: '39%', rotate: '-10deg' },
+            { top: '70%', left: '46%', rotate: '12deg' },
+            { top: '75%', left: '53%', rotate: '10deg' }
+        ];
+        
+        // Transformaciones iniciales desde estado agrupado
+        const initialTransforms = [
+            { translateX: -650, translateY: 0, rotate: '-5deg' },
+            { translateX: -625, translateY: 15, rotate: '3deg' },
+            { translateX: -600, translateY: 30, rotate: '-2deg' },
+            { translateX: -575, translateY: 45, rotate: '4deg' },
+            { translateX: -550, translateY: 60, rotate: '-3deg' }
+        ];
+        
+        // Agregar clase expanded primero
+        diagonalGallery.classList.add('expanded');
+        
+        // Primero establecer todas las posiciones iniciales sin transición
+        diagonalImages.forEach((img, idx) => {
+            const initialTransform = initialTransforms[idx] || { translateX: -650, translateY: 0, rotate: '0deg' };
             
-            if (!diagonalGallery.classList.contains('expanded')) {
-                // Expandir - desplegar imágenes en trayectorias diagonales
-                diagonalGallery.classList.add('expanded');
+            // Desactivar todas las transiciones temporalmente
+            img.style.transition = 'none';
+            img.style.width = '140px';
+            img.style.height = '190px';
+            img.style.bottom = '28%';
+            img.style.left = '50%';
+            img.style.top = 'auto';
+            img.style.transform = `translateX(${initialTransform.translateX}px) translateY(${initialTransform.translateY}px) rotate(${initialTransform.rotate})`;
+            img.style.opacity = idx === 0 ? '1' : (idx < 3 ? '0.95' : '0.7');
+            img.style.zIndex = (5 - idx).toString();
+        });
+        
+        // Forzar reflow para aplicar cambios
+        void diagonalImages[0].offsetHeight;
+        
+        // Luego animar todas hacia posiciones finales
+        requestAnimationFrame(() => {
+            diagonalImages.forEach((img, idx) => {
+                const finalPos = finalPositions[idx] || { top: '50%', left: '50%', rotate: '0deg' };
                 
-                // Obtener posición inicial (inferior izquierda)
-                const startBottom = '20%';
-                const startLeft = '8%';
-                
-                // Posiciones finales desde CSS
-                const finalPositions = [
-                    { top: '10%', left: '5%', rotate: '-15deg' },
-                    { top: '20%', left: '18%', rotate: '8deg' },
-                    { top: '35%', left: '30%', rotate: '-10deg' },
-                    { top: '50%', left: '42%', rotate: '12deg' },
-                    { top: '65%', left: '54%', rotate: '-8deg' },
-                    { top: '15%', left: '65%', rotate: '15deg' },
-                    { top: '45%', left: '75%', rotate: '-12deg' },
-                    { top: '70%', left: '85%', rotate: '10deg' }
-                ];
-                
-                // Agregar retraso escalonado para animación suave
-                diagonalImages.forEach((img, idx) => {
-                    const finalPos = finalPositions[idx] || { top: '50%', left: '50%', rotate: '0deg' };
-                    
-                    // Calcular dirección desde inicio (inferior izquierda ~8%, 20%) hacia posición final
-                    // Convertir porcentajes a píxeles aproximados para cálculo (asumiendo 1440px ancho, 750px alto)
-                    const startX = 1440 * 0.08; // 8% del ancho
-                    const startY = 750 * (1 - 0.20); // 20% desde abajo = 80% desde arriba
-                    
-                    const finalXPercent = parseFloat(finalPos.left) / 100;
-                    const finalYPercent = parseFloat(finalPos.top) / 100;
-                    const finalX = 1440 * finalXPercent;
-                    const finalY = 750 * finalYPercent;
-                    
-                    // Calcular ángulo y distancia para trayectoria diagonal
-                    const deltaX = finalX - startX;
-                    const deltaY = finalY - startY;
-                    const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                    
-                    // Distancia de lanzamiento: ir 30% más lejos en dirección diagonal para efecto dramático
-                    const launchDistance = distance * 0.3;
-                    const launchAngleRad = angle * Math.PI / 180;
-                    const launchX = Math.cos(launchAngleRad) * launchDistance;
-                    const launchY = Math.sin(launchAngleRad) * launchDistance;
-                    
-                    // Paso 1: Lanzar en dirección diagonal (instantáneo)
-                    img.style.transition = 'none';
-                    img.style.width = '140px';
-                    img.style.height = '190px';
-                    img.style.bottom = startBottom;
-                    img.style.left = startLeft;
-                    img.style.top = 'auto';
-                    img.style.transform = `translate(${launchX}px, ${-launchY}px) rotate(${angle + 15}deg) scale(0.85)`;
-                    
-                    // Forzar reflow
-                    img.offsetHeight;
-                    
-                    // Paso 2: Animar hacia posición final con arco diagonal suave
-                    setTimeout(() => {
-                        img.style.transition = 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.9s ease, height 0.9s ease, top 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), left 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 1.2s ease, opacity 0.8s ease';
-                        img.style.width = '180px';
-                        img.style.height = '240px';
-                        img.style.border = 'none';
-                        img.style.bottom = 'auto';
-                        img.style.top = finalPos.top;
-                        img.style.left = finalPos.left;
-                        img.style.transform = `rotate(${finalPos.rotate}) translate(0, 0) scale(1)`;
-                    }, idx * 100 + 100);
-                });
+                // Activar transiciones solo para la animación
+                img.style.transition = 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.9s ease, height 0.9s ease, top 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), left 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 1.2s ease, opacity 0.8s ease';
+                img.style.width = '180px';
+                img.style.height = '240px';
+                img.style.border = 'none';
+                img.style.bottom = 'auto';
+                img.style.top = finalPos.top;
+                img.style.left = finalPos.left;
+                img.style.transform = `rotate(${finalPos.rotate}) translate(0, 0) scale(1)`;
+                img.style.opacity = '1';
+                img.style.zIndex = (idx + 1).toString();
+            });
+        });
+    }
+    
+    // Función para colapsar todas las imágenes
+    function collapseImages() {
+        if (!diagonalGallery.classList.contains('expanded')) return;
+        
+        // Restaurar opacidades y transformaciones escalonadas
+        const transforms = [
+            { translateX: -650, translateY: 0, rotate: '-5deg' },
+            { translateX: -625, translateY: 15, rotate: '3deg' },
+            { translateX: -600, translateY: 30, rotate: '-2deg' },
+            { translateX: -575, translateY: 45, rotate: '4deg' },
+            { translateX: -550, translateY: 60, rotate: '-3deg' }
+        ];
+        const opacities = [1, 0.85, 0.7, 0.55, 0.4];
+        
+        // Remover clase expanded primero
+        diagonalGallery.classList.remove('expanded');
+        
+        // Colapsar todas las imágenes al mismo tiempo
+        diagonalImages.forEach((img, idx) => {
+            const transform = transforms[idx] || { translateX: -650, translateY: 0, rotate: '0deg' };
+            
+            // Establecer transición para todas las propiedades incluyendo tamaño
+            img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
+            
+            // Volver a tamaño pequeño y posición debajo de "Siempre"
+            img.style.width = '140px';
+            img.style.height = '190px';
+            img.style.bottom = '28%';
+            img.style.left = '50%';
+            img.style.top = 'auto';
+            img.style.transform = `translateX(${transform.translateX}px) translateY(${transform.translateY}px) rotate(${transform.rotate})`;
+            img.style.opacity = opacities[idx] || 0.95;
+            img.style.zIndex = (5 - idx).toString();
+            
+            // Agregar borde de vuelta a la primera imagen
+            if (idx === 0) {
+                img.style.border = '2px solid #ff4444';
             } else {
-                // Colapsar - volver al estado agrupado
-                diagonalGallery.classList.remove('expanded');
-                
-                // Agregar retraso escalonado para colapso suave
-                diagonalImages.forEach((img, idx) => {
-                    // Establecer transición para todas las propiedades incluyendo tamaño
-                    img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
-                    
-                    // Volver a tamaño pequeño y posición inferior izquierda
-                    setTimeout(() => {
-                        img.style.width = '140px';
-                        img.style.height = '190px';
-                        img.style.bottom = '20%';
-                        img.style.left = '8%';
-                        img.style.top = 'auto';
-                        
-                        // Agregar borde de vuelta a la primera imagen
-                        if (idx === 0) {
-                            img.style.border = '2px solid #ff4444';
-                        } else {
-                            img.style.border = 'none';
-                        }
-                    }, idx * 30);
-                });
+                img.style.border = 'none';
             }
         });
+    }
+    
+    // Variable para rastrear el timeout de colapso
+    let collapseTimeout = null;
+    
+    // Asegurar que los pointer events estén habilitados
+    diagonalImages.forEach((img) => {
+        img.style.pointerEvents = 'auto';
+        img.style.cursor = 'pointer';
     });
     
     // Efectos hover - tanto cuando están agrupadas como expandidas
@@ -362,10 +357,24 @@ function initDiagonalImageInteractions() {
         img.style.pointerEvents = 'auto';
         img.style.cursor = 'pointer';
         
-        img.addEventListener('mouseenter', function() {
-            console.log('Mouse entró en imagen:', index);
+        img.addEventListener('mouseenter', function(e) {
+            e.stopPropagation();
+            // Limpiar cualquier timeout de colapso pendiente
+            clearTimeout(collapseTimeout);
+            
+            console.log('Mouse enter en imagen', index, 'expanded:', diagonalGallery.classList.contains('expanded'));
+            
             if (diagonalGallery.classList.contains('expanded')) {
-                // Hover cuando está expandida
+                // Hover cuando está expandida - efecto visual individual
+                const finalPositions = [
+                    { rotate: '-15deg' },
+                    { rotate: '8deg' },
+                    { rotate: '-10deg' },
+                    { rotate: '12deg' },
+                    { rotate: '10deg' }
+                ];
+                const finalRot = finalPositions[index]?.rotate || '0deg';
+                
                 this.style.transform = `rotate(0deg) scale(1.15) translateY(-15px)`;
                 this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, z-index 0.4s ease';
                 this.style.zIndex = '50';
@@ -376,25 +385,29 @@ function initDiagonalImageInteractions() {
                     imgElement.style.transform = 'scale(1.1)';
                 }
             } else {
-                // Hover cuando está agrupada - interacción más visible
-                this.style.transform = 'translate(0, -8px) rotate(0deg) scale(1.08)';
-                this.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, z-index 0.3s ease';
-                this.style.zIndex = '25';
-                this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.35)';
-                this.style.cursor = 'pointer';
-                
-                const imgElement = this.querySelector('img');
-                if (imgElement) {
-                    imgElement.style.filter = 'brightness(1.1)';
-                    imgElement.style.transition = 'filter 0.3s ease';
-                }
+                // Cuando está agrupada - expandir todas las imágenes solo si el cursor entra en las imágenes
+                expandImages();
             }
         });
 
-        img.addEventListener('mouseleave', function() {
+        img.addEventListener('mouseleave', function(e) {
+            e.stopPropagation();
+            console.log('Mouse leave en imagen', index, 'expanded:', diagonalGallery.classList.contains('expanded'));
+            
             if (diagonalGallery.classList.contains('expanded')) {
                 // Restaurar cuando está expandida
-                this.style.transform = `rotate(${baseRotation}deg) scale(1) translateY(0)`;
+                const finalPositions = [
+                    { rotate: '-15deg' },
+                    { rotate: '8deg' },
+                    { rotate: '-10deg' },
+                    { rotate: '12deg' },
+                    { rotate: '10deg' }
+                ];
+                const finalRot = finalPositions[index]?.rotate || '0deg';
+                
+                // Restaurar transformación con transición suave
+                this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, z-index 0.4s ease';
+                this.style.transform = `rotate(${finalRot}) translate(0, 0) scale(1)`;
                 this.style.zIndex = (index + 1).toString();
                 this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
                 
@@ -402,63 +415,45 @@ function initDiagonalImageInteractions() {
                 if (imgElement) {
                     imgElement.style.transform = 'scale(1)';
                 }
-            } else {
-                // Restaurar cuando está agrupada
-                const transforms = [
-                    { translate: 'translate(0, 0)', rotate: '-5deg' },
-                    { translate: 'translate(12px, -8px)', rotate: '3deg' },
-                    { translate: 'translate(24px, -16px)', rotate: '-2deg' },
-                    { translate: 'translate(8px, 8px)', rotate: '4deg' },
-                    { translate: 'translate(20px, 4px)', rotate: '-3deg' },
-                    { translate: 'translate(16px, -12px)', rotate: '2deg' },
-                    { translate: 'translate(28px, -4px)', rotate: '-4deg' },
-                    { translate: 'translate(32px, 0px)', rotate: '3deg' }
-                ];
                 
-                const transform = transforms[index] || { translate: 'translate(0, 0)', rotate: '0deg' };
-                this.style.transform = `${transform.translate} rotate(${transform.rotate}) scale(1)`;
-                this.style.zIndex = index === 0 ? '24' : (24 - index).toString();
-                this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+                // Verificar si el cursor salió completamente de la zona de imágenes expandidas
+                const relatedTarget = e.relatedTarget;
+                const isMovingToAnotherImage = relatedTarget && (
+                    Array.from(diagonalImages).includes(relatedTarget) ||
+                    diagonalGallery.contains(relatedTarget)
+                );
                 
-                const imgElement = this.querySelector('img');
-                if (imgElement) {
-                    imgElement.style.filter = 'brightness(1)';
+                if (!isMovingToAnotherImage) {
+                    collapseTimeout = setTimeout(() => {
+                        // Verificar una vez más si realmente no hay hover sobre ninguna imagen
+                        const isHoveringAny = Array.from(diagonalImages).some(img => img.matches(':hover'));
+                        if (!isHoveringAny && diagonalGallery.classList.contains('expanded')) {
+                            collapseImages();
+                        }
+                    }, 100);
                 }
             }
         });
     });
     
-    // Click fuera para colapsar
-    document.addEventListener('click', function(e) {
+    // Verificar cuando se sale completamente del contenedor de la galería expandida
+    diagonalGallery.addEventListener('mouseleave', function(e) {
         if (diagonalGallery.classList.contains('expanded')) {
-            const clickedInside = diagonalGallery.contains(e.target);
-            const clickedOnImage = e.target.closest('.diagonal-image');
-            
-            // Solo colapsar si se hace click fuera de la galería (no en las imágenes)
-            if (!clickedInside && !clickedOnImage) {
-                diagonalGallery.classList.remove('expanded');
-                
-                // Animar colapso
-                diagonalImages.forEach((img, idx) => {
-                    img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
-                    
-                    setTimeout(() => {
-                        img.style.width = '140px';
-                        img.style.height = '190px';
-                        img.style.bottom = '20%';
-                        img.style.left = '8%';
-                        img.style.top = 'auto';
-                        
-                        if (idx === 0) {
-                            img.style.border = '2px solid #ff4444';
-                        } else {
-                            img.style.border = 'none';
-                        }
-                    }, idx * 30);
-                });
+            const relatedTarget = e.relatedTarget;
+            // Si el cursor sale del contenedor y no va a otra imagen, colapsar
+            if (!relatedTarget || !diagonalGallery.contains(relatedTarget)) {
+                clearTimeout(collapseTimeout);
+                collapseTimeout = setTimeout(() => {
+                    const isHoveringAny = Array.from(diagonalImages).some(img => img.matches(':hover'));
+                    if (!isHoveringAny && diagonalGallery.classList.contains('expanded')) {
+                        collapseImages();
+                    }
+                }, 100);
             }
         }
     });
+    
+    
     
     console.log('Interacciones de imágenes diagonales inicializadas exitosamente');
 }
@@ -726,41 +721,41 @@ function initFadeInAnimations() {
                 const diagonalImages = element.querySelectorAll('.diagonal-image');
                 
                 diagonalImages.forEach((img, idx) => {
-                    // Comenzar oculta y escalada en posición inferior izquierda
+                    // Comenzar oculta y escalada en posición debajo de "Siempre"
                     img.style.opacity = '0';
-                    img.style.bottom = '20%';
-                    img.style.left = '8%';
+                    img.style.bottom = '28%';
+                    img.style.left = '50%';
                     img.style.top = 'auto';
                     img.style.width = '140px';
                     img.style.height = '190px';
-                    img.style.transform = 'translate(0, 20px) rotate(0deg) scale(0.5)';
+                    img.style.transform = 'translateX(-650px) translateY(20px) rotate(0deg) scale(0.5)';
                     img.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.8s ease, height 0.8s ease';
                     
-                    // Animar a estado agrupado con escalonamiento (pila inferior izquierda)
+                    // Animar a estado agrupado con escalonamiento (pila debajo de "Siempre")
                     setTimeout(() => {
-                        // Diferentes transformaciones para cada imagen para crear efecto de pila
+                        // Diferentes transformaciones para cada imagen para crear efecto de pila escalonada
                         const transforms = [
-                            { translate: 'translate(0, 0)', rotate: '-5deg' },
-                            { translate: 'translate(12px, -8px)', rotate: '3deg' },
-                            { translate: 'translate(24px, -16px)', rotate: '-2deg' },
-                            { translate: 'translate(8px, 8px)', rotate: '4deg' },
-                            { translate: 'translate(20px, 4px)', rotate: '-3deg' },
-                            { translate: 'translate(16px, -12px)', rotate: '2deg' },
-                            { translate: 'translate(28px, -4px)', rotate: '-4deg' },
-                            { translate: 'translate(32px, 0px)', rotate: '3deg' }
+                            { translateX: -650, translateY: 0, rotate: '-5deg' },
+                            { translateX: -625, translateY: 15, rotate: '3deg' },
+                            { translateX: -600, translateY: 30, rotate: '-2deg' },
+                            { translateX: -575, translateY: 45, rotate: '4deg' },
+                            { translateX: -550, translateY: 60, rotate: '-3deg' }
                         ];
                         
-                        const transform = transforms[idx] || { translate: 'translate(0, 0)', rotate: '0deg' };
-                        const opacity = idx === 0 ? '0.95' : (idx < 3 ? '0.95' : (idx < 4 ? '0.3' : '0.2'));
+                        const opacities = [1, 0.85, 0.7, 0.55, 0.4];
                         
-                        img.style.opacity = opacity;
+                        const transform = transforms[idx] || { translateX: -650, translateY: 0, rotate: '0deg' };
+                        
+                        img.style.opacity = opacities[idx] || 0.95;
                         img.style.width = '140px';
                         img.style.height = '190px';
-                        img.style.transform = `${transform.translate} rotate(${transform.rotate}) scale(1)`;
+                        img.style.transform = `translateX(${transform.translateX}px) translateY(${transform.translateY}px) rotate(${transform.rotate}) scale(1)`;
                         
                         // Agregar borde a la primera imagen
                         if (idx === 0) {
                             img.style.border = '2px solid #ff4444';
+                        } else {
+                            img.style.border = 'none';
                         }
                     }, delay + (idx * 60));
                 });
