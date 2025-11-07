@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veintidos ejercicio: Imitación9</title>
+    <link rel="stylesheet" href="./main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="./animations.js" defer></script>
+</head>
+<body>
+    <div class="stage">
+        <!-- Background with texture -->
+        <div class="bg-texture"></div>
+
+        <!-- Header -->
+        <header class="header">
+            <!-- Logo -->
+            <div class="logo">
+                <span class="logo-text">Lunita</span>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="nav">
+                <a href="#" class="nav-item active">
+                    <span>L</span>
+                    <div class="nav-dot"></div>
+                </a>
+                <a href="#" class="nav-item">
+                    <span>U</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span>N</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span>A</span>
+                </a>
+            </nav>
+
+            <!-- Language selector and hamburger -->
+            <div class="header-right">
+                <div class="language-selector">
+                    <span>(ES)</span>
+                    <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 4.5L6 7.5L9 4.5"/>
+                    </svg>
+                </div>
+                <button class="hamburger-button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Headline with integrated elements -->
+            <div class="headline-container">
+                <div class="headline-line-1">
+                    <span class="headline-word">yo</span>
+                    <div class="headline-image-wrapper">
+                        <img src="./img/gato.gif" alt="Animated scene" class="headline-image">
+                    </div>
+                    <span class="headline-word">y</span>
+                    <div class="headline-illustration">
+                        <svg viewBox="0 0 120 120" class="person-illustration">
+                            <!-- Person stepping out -->
+                            <circle cx="40" cy="35" r="12" fill="currentColor"/>
+                            <path d="M35 47 L30 80 L35 80 L40 47 Z" fill="currentColor"/>
+                            <path d="M30 65 L20 70 L25 75 L35 70 Z" fill="currentColor"/>
+                            <path d="M45 65 L55 70 L50 75 L40 70 Z" fill="currentColor"/>
+                            
+                            <!-- Doorway -->
+                            <rect x="55" y="30" width="50" height="60" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path d="M55 30 L75 30 L75 90 L55 90" fill="currentColor" opacity="0.1"/>
+                            
+                            <!-- Stars and asterisk above -->
+                            <circle cx="70" cy="20" r="2" fill="white"/>
+                            <circle cx="80" cy="18" r="1.5" fill="white"/>
+                            <circle cx="85" cy="22" r="1.5" fill="white"/>
+                            <path d="M75 15 L75 10 M72 12 L78 12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M75 12 L73 9 L77 9 Z" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="headline-line-2">
+                    <span class="headline-word">Luna</span>
+                </div>
+                <div class="headline-line-3">
+                    <span class="headline-word">Siempre</span>
+                </div>
+            </div>
+
+            <!-- Diagonal image gallery -->
+            <div class="diagonal-gallery" id="diagonalGallery">
+                <div class="diagonal-image diagonal-img-1">
+                    <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro 1">
+                </div>
+                <div class="diagonal-image diagonal-img-2">
+                    <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro 2">
+                </div>
+                <div class="diagonal-image diagonal-img-3">
+                    <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro 3">
+                </div>
+                <div class="diagonal-image diagonal-img-4">
+                    <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro 4">
+                </div>
+                <div class="diagonal-image diagonal-img-5">
+                    <img src="./img/E87F18A7-DA9E-463E-B457-70EC2BB1D2EA_1_102_o.jpeg" alt="Perro 5">
+                </div>
+            </div>
+
+            <!-- Explanatory text bottom right -->
+            <div class="explanatory-text">
+                <p><span class="asterisk">(*)</span> Bitacora2: Luna está muy energetica buscando la fukin carnaza. Andrew, estoy cansada</p>
+            </div>
+
+            <!-- CTA Button -->
+            <button class="cta-button">
+                <span>• Hora de dormir PORFA</span>
+            </button>
+        </main>
+
+        <!-- Scroll indicator right -->
+        <div class="scroll-indicator">
+            <span class="scroll-text">Botón de Panico</span>
+            <div class="scroll-arrow">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 8L10 13L15 8"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
