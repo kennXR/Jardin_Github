@@ -1,810 +1,489 @@
 // ============================================
-// UNTOLD STORIES - Animaciones
-// Inspirado en untold.site
+// Configuracion de la escena
 // ============================================
 
-// ============================================
-// EFECTO DE SEGUIMIENTO DEL CURSOR
-// ============================================
+let scene, camera, renderer;
+let geometries = [];
+let meshControllers = [];
+let meshData = [];
+let raycaster;
+let pointer;
+let hoveredController = null;
+let isAnimating = false;
+const clock = new THREE.Clock();
 
-function initCursorFollow() {
-    const stage = document.querySelector('.stage');
-    if (!stage) return;
-    
-    let mouseX = 0;
-    let mouseY = 0;
-    let cursorX = 0;
-    let cursorY = 0;
+const CANVAS_ID = 'three-canvas';
+const TEXTURE_PATH = './text/silver-ue/gold-nugget-ue/';
+const TOTAL_TEXTURES = 5;
+const TEXTURE_FILES = {
+    albedo: 'gold-nugget1_albedo.png',
+    normal: 'gold-nugget1_normal-dx.png',
+    metallic: 'gold-nugget1_metallic.png',
+    roughness: 'gold-nugget1_roughness.png',
+    ao: 'gold-nugget1_ao.png'
+};
 
-    stage.addEventListener('mousemove', (e) => {
-        const rect = stage.getBoundingClientRect();
-        mouseX = e.clientX - rect.left;
-        mouseY = e.clientY - rect.top;
-    });
+// =============================
+// Funciones auxiliares
+// =============================
 
-    function animateCursor() {
-        cursorX += (mouseX - cursorX) * 0.1;
-        cursorY += (mouseY - cursorY) * 0.1;
-
-        // Efecto parallax en los elementos del headline
-        const headlineWords = document.querySelectorAll('.headline-word');
-        const headlineImage = document.querySelector('.headline-image-wrapper');
-        const headlineIllustration = document.querySelector('.headline-illustration');
-        const diagonalImages = document.querySelectorAll('.diagonal-image');
-
-        const centerX = stage.offsetWidth / 2;
-        const centerY = stage.offsetHeight / 2;
-
-        const deltaX = (cursorX - centerX) / centerX;
-        const deltaY = (cursorY - centerY) / centerY;
-
-        // Movimiento sutil de las palabras del headline
-        headlineWords.forEach((word, index) => {
-            const intensity = (index + 1) * 0.3;
-            const moveX = deltaX * intensity * 5;
-            const moveY = deltaY * intensity * 5;
-            word.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        });
-
-        // Movimiento de la imagen del headline
-        if (headlineImage) {
-            const moveX = deltaX * 8;
-            const moveY = deltaY * 8;
-            headlineImage.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        }
-
-        // Movimiento de la ilustración
-        if (headlineIllustration) {
-            const moveX = deltaX * -6;
-            const moveY = deltaY * -6;
-            headlineIllustration.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        }
-
-        // Las imágenes diagonales se mantienen estáticas cuando están expandidas (sin parallax)
-
-        requestAnimationFrame(animateCursor);
-    }
-
-    animateCursor();
+function createScene() {
+    const newScene = new THREE.Scene();
+    newScene.background = new THREE.Color(0x111111);
+    return newScene;
 }
 
-// ============================================
-// INTERACCIONES DE LAS PALABRAS DEL HEADLINE
-// ============================================
+function createCamera() {
+    const newCamera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+    newCamera.position.set(0, 0.4, 7);
+    newCamera.lookAt(0, 0, 0);
+    return newCamera;
+}
+function updateCameraPosition(contentWidth = 0) {
+    if (!camera) return;
+    const width = window.innerWidth;
+    let baseSettings;
+    if (width >= 1600) baseSettings = { y: 0.24, z: 7.6 };
+    else if (width >= 1300) baseSettings = { y: 0.22, z: 7.1 };
+    else if (width >= 1000) baseSettings = { y: 0.2, z: 6.7 };
+    else if (width >= 768) baseSettings = { y: 0.18, z: 6.3 };
+    else if (width >= 560) baseSettings = { y: 0.16, z: 6.0 };
+    else baseSettings = { y: 0.14, z: 5.8 };
 
-function initHeadlineInteractions() {
-    const headlineWords = document.querySelectorAll('.headline-word');
-    
-    headlineWords.forEach(word => {
-        word.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.05)';
-            this.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            this.style.cursor = 'pointer';
-        });
+    const zAdjustment = THREE.MathUtils.clamp(contentWidth * 0.04, 0.15, 0.6);
+    camera.position.set(0, baseSettings.y, baseSettings.z + zAdjustment);
+    camera.lookAt(0, 0, 0);
+}
 
-        word.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
-
-        word.addEventListener('click', function() {
-            // Agregar efecto ripple (ondulación)
-            const ripple = document.createElement('span');
-            ripple.style.position = 'absolute';
-            ripple.style.width = '20px';
-            ripple.style.height = '20px';
-            ripple.style.borderRadius = '50%';
-            ripple.style.background = 'rgba(255, 68, 68, 0.3)';
-            ripple.style.transform = 'scale(0)';
-            ripple.style.animation = 'ripple 0.6s ease-out';
-            ripple.style.pointerEvents = 'none';
-            
-            const rect = this.getBoundingClientRect();
-            const stageRect = document.querySelector('.stage').getBoundingClientRect();
-            ripple.style.left = (rect.left - stageRect.left + rect.width / 2) + 'px';
-            ripple.style.top = (rect.top - stageRect.top + rect.height / 2) + 'px';
-            
-            document.querySelector('.stage').appendChild(ripple);
-            
-            setTimeout(() => ripple.remove(), 600);
-        });
+function createRenderer(canvas) {
+    const newRenderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true
     });
+    newRenderer.setSize(window.innerWidth, window.innerHeight);
+    newRenderer.setPixelRatio(window.devicePixelRatio);
+    newRenderer.shadowMap.enabled = true;
+    newRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    newRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+    newRenderer.toneMappingExposure = 1.25;
+    newRenderer.outputColorSpace = THREE.SRGBColorSpace;
+    return newRenderer;
+}
 
-    // Agregar animación ripple al CSS dinámicamente
-    if (!document.querySelector('#ripple-style')) {
-        const style = document.createElement('style');
-        style.id = 'ripple-style';
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(20);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+function setupLights(targetScene, activeCamera) {
+    const hemiLight = new THREE.HemisphereLight(0xfff8dc, 0x08090f, 5);
+    hemiLight.position.set(5, 5, 5);
+    targetScene.add(hemiLight);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 5);
+    targetScene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 100);
+    directionalLight.position.copy(activeCamera.position.clone().add(new THREE.Vector3(1.5, 1.5, 0)));
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.camera.near = 5;
+    directionalLight.shadow.camera.far = 50;
+    directionalLight.shadow.camera.left = -10;
+    directionalLight.shadow.camera.right = 10;
+    directionalLight.shadow.camera.top = 10;
+    directionalLight.shadow.camera.bottom = -10;
+    targetScene.add(directionalLight);
+
+    const frontLight = new THREE.PointLight(0xfff8e1, 100, 180);
+    frontLight.position.copy(activeCamera.position.clone().add(new THREE.Vector3(0, 1, 2)));
+    targetScene.add(frontLight);
+
+    const warmSideLight = new THREE.PointLight(0xffd27f, 100, 140);
+    warmSideLight.position.copy(activeCamera.position.clone().add(new THREE.Vector3(-3, 0.5, -1)));
+    targetScene.add(warmSideLight);
+
+    const rimLight = new THREE.PointLight(0x8fc7ff, 100, 150);
+    rimLight.position.set(5, 4, -4);
+    targetScene.add(rimLight);
+}
+
+function updateProgressUI(progress) {
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+
+    if (progressFill) {
+        progressFill.style.width = `${progress}%`;
+    }
+
+    if (progressText) {
+        progressText.textContent = `${Math.round(progress)}%`;
     }
 }
 
-// ============================================
-// INTERACCIONES DE LA IMAGEN DEL HEADLINE
-// ============================================
+function createTextureLoadTracker(totalTextures) {
+    let texturesLoaded = 0;
+    updateProgressUI(0);
 
-function initHeadlineImageInteractions() {
-    const headlineImage = document.querySelector('.headline-image-wrapper');
-    if (!headlineImage) return;
+    return function handleTextureLoaded() {
+        texturesLoaded++;
+        const progress = (texturesLoaded / totalTextures) * 100;
+        updateProgressUI(progress);
 
-    headlineImage.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.1) rotate(2deg)';
-        this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        this.style.zIndex = '15';
-        this.style.cursor = 'pointer';
-        
-        const img = this.querySelector('.headline-image');
-        if (img) {
-            img.style.filter = 'brightness(1.1) contrast(1.05)';
+        if (texturesLoaded === totalTextures && !isAnimating) {
+            isAnimating = true;
+            setTimeout(() => {
+                hideLoader();
+                animate();
+            }, 300);
         }
-    });
-
-    headlineImage.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1) rotate(0deg)';
-        this.style.zIndex = '10';
-        
-        const img = this.querySelector('.headline-image');
-        if (img) {
-            img.style.filter = 'brightness(1) contrast(1)';
-        }
-    });
-}
-
-// ============================================
-// INTERACCIONES DE LA ILUSTRACIÓN
-// ============================================
-
-function initIllustrationInteractions() {
-    const illustration = document.querySelector('.headline-illustration');
-    if (!illustration) return;
-
-    illustration.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.15) rotate(5deg)';
-        this.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        this.style.cursor = 'pointer';
-        
-        const svg = this.querySelector('svg');
-        if (svg) {
-            svg.style.filter = 'drop-shadow(0 4px 8px rgba(255, 68, 68, 0.3))';
-        }
-    });
-
-    illustration.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1) rotate(0deg)';
-        
-        const svg = this.querySelector('svg');
-        if (svg) {
-            svg.style.filter = 'none';
-        }
-    });
-}
-
-// ============================================
-// INTERACCIONES DE LAS IMÁGENES DIAGONALES
-// ============================================
-
-function initDiagonalImageInteractions() {
-    const diagonalGallery = document.getElementById('diagonalGallery');
-    const diagonalImages = document.querySelectorAll('.diagonal-image');
-    
-    if (!diagonalGallery) {
-        console.warn('Galería diagonal no encontrada');
-        return;
-    }
-    
-    if (diagonalImages.length === 0) {
-        console.warn('No se encontraron imágenes diagonales');
-        return;
-    }
-    
-    console.log(`Inicializando interacciones para ${diagonalImages.length} imágenes`);
-    
-    // Asegurar que todas las imágenes tengan pointer-events habilitados antes de agregar listeners
-    diagonalImages.forEach((img, idx) => {
-        img.style.pointerEvents = 'auto';
-        img.style.cursor = 'pointer';
-        img.style.zIndex = (5 - idx).toString();
-        console.log(`Imagen ${idx} configurada:`, img.style.pointerEvents, img.style.cursor);
-    });
-    
-    // Mapeo de rotaciones desde las clases CSS
-    const rotations = {
-        'diagonal-img-1': '-15',
-        'diagonal-img-2': '8',
-        'diagonal-img-3': '-10',
-        'diagonal-img-4': '12',
-        'diagonal-img-5': '10'
     };
-    
-    // Almacenar rotaciones iniciales
-    diagonalImages.forEach(img => {
-        const classList = Array.from(img.classList);
-        const imgClass = classList.find(c => c.startsWith('diagonal-img-'));
-        if (imgClass && rotations[imgClass]) {
-            img.setAttribute('data-rotation', rotations[imgClass]);
-        } else {
-            img.setAttribute('data-rotation', '0');
-        }
-    });
-    
-    // Función para expandir todas las imágenes al mismo tiempo
-    function expandImages() {
-        if (diagonalGallery.classList.contains('expanded')) return;
-        
-        // Posiciones finales desde CSS (5 imágenes - debajo del texto)
-        const finalPositions = [
-            { top: '55%', left: '25%', rotate: '-15deg' },
-            { top: '60%', left: '32%', rotate: '8deg' },
-            { top: '65%', left: '39%', rotate: '-10deg' },
-            { top: '70%', left: '46%', rotate: '12deg' },
-            { top: '75%', left: '53%', rotate: '10deg' }
-        ];
-        
-        // Transformaciones iniciales desde estado agrupado
-        const initialTransforms = [
-            { translateX: -650, translateY: 0, rotate: '-5deg' },
-            { translateX: -625, translateY: 15, rotate: '3deg' },
-            { translateX: -600, translateY: 30, rotate: '-2deg' },
-            { translateX: -575, translateY: 45, rotate: '4deg' },
-            { translateX: -550, translateY: 60, rotate: '-3deg' }
-        ];
-        
-        // Agregar clase expanded primero
-        diagonalGallery.classList.add('expanded');
-        
-        // Primero establecer todas las posiciones iniciales sin transición
-        diagonalImages.forEach((img, idx) => {
-            const initialTransform = initialTransforms[idx] || { translateX: -650, translateY: 0, rotate: '0deg' };
-            
-            // Desactivar todas las transiciones temporalmente
-            img.style.transition = 'none';
-            img.style.width = '140px';
-            img.style.height = '190px';
-            img.style.bottom = '28%';
-            img.style.left = '50%';
-            img.style.top = 'auto';
-            img.style.transform = `translateX(${initialTransform.translateX}px) translateY(${initialTransform.translateY}px) rotate(${initialTransform.rotate})`;
-            img.style.opacity = idx === 0 ? '1' : (idx < 3 ? '0.95' : '0.7');
-            img.style.zIndex = (5 - idx).toString();
-        });
-        
-        // Forzar reflow para aplicar cambios
-        void diagonalImages[0].offsetHeight;
-        
-        // Luego animar todas hacia posiciones finales
-        requestAnimationFrame(() => {
-            diagonalImages.forEach((img, idx) => {
-                const finalPos = finalPositions[idx] || { top: '50%', left: '50%', rotate: '0deg' };
-                
-                // Activar transiciones solo para la animación
-                img.style.transition = 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.9s ease, height 0.9s ease, top 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), left 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), bottom 1.2s ease, opacity 0.8s ease';
-                img.style.width = '180px';
-                img.style.height = '240px';
-                img.style.border = 'none';
-                img.style.bottom = 'auto';
-                img.style.top = finalPos.top;
-                img.style.left = finalPos.left;
-                img.style.transform = `rotate(${finalPos.rotate}) translate(0, 0) scale(1)`;
-                img.style.opacity = '1';
-                img.style.zIndex = (idx + 1).toString();
-            });
-        });
-    }
-    
-    // Función para colapsar todas las imágenes
-    function collapseImages() {
-        if (!diagonalGallery.classList.contains('expanded')) return;
-        
-        // Restaurar opacidades y transformaciones escalonadas
-        const transforms = [
-            { translateX: -650, translateY: 0, rotate: '-5deg' },
-            { translateX: -625, translateY: 15, rotate: '3deg' },
-            { translateX: -600, translateY: 30, rotate: '-2deg' },
-            { translateX: -575, translateY: 45, rotate: '4deg' },
-            { translateX: -550, translateY: 60, rotate: '-3deg' }
-        ];
-        const opacities = [1, 0.85, 0.7, 0.55, 0.4];
-        
-        // Remover clase expanded primero
-        diagonalGallery.classList.remove('expanded');
-        
-        // Colapsar todas las imágenes al mismo tiempo
-        diagonalImages.forEach((img, idx) => {
-            const transform = transforms[idx] || { translateX: -650, translateY: 0, rotate: '0deg' };
-            
-            // Establecer transición para todas las propiedades incluyendo tamaño
-            img.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease, width 0.8s ease, height 0.8s ease, top 0.8s ease, left 0.8s ease, bottom 0.8s ease';
-            
-            // Volver a tamaño pequeño y posición debajo de "Siempre"
-            img.style.width = '140px';
-            img.style.height = '190px';
-            img.style.bottom = '28%';
-            img.style.left = '50%';
-            img.style.top = 'auto';
-            img.style.transform = `translateX(${transform.translateX}px) translateY(${transform.translateY}px) rotate(${transform.rotate})`;
-            img.style.opacity = opacities[idx] || 0.95;
-            img.style.zIndex = (5 - idx).toString();
-            
-            // Agregar borde de vuelta a la primera imagen
-            if (idx === 0) {
-                img.style.border = '2px solid #ff4444';
-            } else {
-                img.style.border = 'none';
-            }
-        });
-    }
-    
-    // Variable para rastrear el timeout de colapso
-    let collapseTimeout = null;
-    
-    // Asegurar que los pointer events estén habilitados
-    diagonalImages.forEach((img) => {
-        img.style.pointerEvents = 'auto';
-        img.style.cursor = 'pointer';
-    });
-    
-    // Efectos hover - tanto cuando están agrupadas como expandidas
-    diagonalImages.forEach((img, index) => {
-        const baseRotation = img.getAttribute('data-rotation') || '0';
-        
-        // Asegurar pointer events y cursor
-        img.style.pointerEvents = 'auto';
-        img.style.cursor = 'pointer';
-        
-        img.addEventListener('mouseenter', function(e) {
-            e.stopPropagation();
-            // Limpiar cualquier timeout de colapso pendiente
-            clearTimeout(collapseTimeout);
-            
-            console.log('Mouse enter en imagen', index, 'expanded:', diagonalGallery.classList.contains('expanded'));
-            
-            if (diagonalGallery.classList.contains('expanded')) {
-                // Hover cuando está expandida - efecto visual individual
-                const finalPositions = [
-                    { rotate: '-15deg' },
-                    { rotate: '8deg' },
-                    { rotate: '-10deg' },
-                    { rotate: '12deg' },
-                    { rotate: '10deg' }
-                ];
-                const finalRot = finalPositions[index]?.rotate || '0deg';
-                
-                this.style.transform = `rotate(0deg) scale(1.15) translateY(-15px)`;
-                this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, z-index 0.4s ease';
-                this.style.zIndex = '50';
-                this.style.boxShadow = '0 15px 50px rgba(0, 0, 0, 0.3)';
-                
-                const imgElement = this.querySelector('img');
-                if (imgElement) {
-                    imgElement.style.transform = 'scale(1.1)';
-                }
-            } else {
-                // Cuando está agrupada - expandir todas las imágenes solo si el cursor entra en las imágenes
-                expandImages();
-            }
-        });
-
-        img.addEventListener('mouseleave', function(e) {
-            e.stopPropagation();
-            console.log('Mouse leave en imagen', index, 'expanded:', diagonalGallery.classList.contains('expanded'));
-            
-            if (diagonalGallery.classList.contains('expanded')) {
-                // Restaurar cuando está expandida
-                const finalPositions = [
-                    { rotate: '-15deg' },
-                    { rotate: '8deg' },
-                    { rotate: '-10deg' },
-                    { rotate: '12deg' },
-                    { rotate: '10deg' }
-                ];
-                const finalRot = finalPositions[index]?.rotate || '0deg';
-                
-                // Restaurar transformación con transición suave
-                this.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, z-index 0.4s ease';
-                this.style.transform = `rotate(${finalRot}) translate(0, 0) scale(1)`;
-                this.style.zIndex = (index + 1).toString();
-                this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-                
-                const imgElement = this.querySelector('img');
-                if (imgElement) {
-                    imgElement.style.transform = 'scale(1)';
-                }
-                
-                // Verificar si el cursor salió completamente de la zona de imágenes expandidas
-                const relatedTarget = e.relatedTarget;
-                const isMovingToAnotherImage = relatedTarget && (
-                    Array.from(diagonalImages).includes(relatedTarget) ||
-                    diagonalGallery.contains(relatedTarget)
-                );
-                
-                if (!isMovingToAnotherImage) {
-                    collapseTimeout = setTimeout(() => {
-                        // Verificar una vez más si realmente no hay hover sobre ninguna imagen
-                        const isHoveringAny = Array.from(diagonalImages).some(img => img.matches(':hover'));
-                        if (!isHoveringAny && diagonalGallery.classList.contains('expanded')) {
-                            collapseImages();
-                        }
-                    }, 100);
-                }
-            }
-        });
-    });
-    
-    // Verificar cuando se sale completamente del contenedor de la galería expandida
-    diagonalGallery.addEventListener('mouseleave', function(e) {
-        if (diagonalGallery.classList.contains('expanded')) {
-            const relatedTarget = e.relatedTarget;
-            // Si el cursor sale del contenedor y no va a otra imagen, colapsar
-            if (!relatedTarget || !diagonalGallery.contains(relatedTarget)) {
-                clearTimeout(collapseTimeout);
-                collapseTimeout = setTimeout(() => {
-                    const isHoveringAny = Array.from(diagonalImages).some(img => img.matches(':hover'));
-                    if (!isHoveringAny && diagonalGallery.classList.contains('expanded')) {
-                        collapseImages();
-                    }
-                }, 100);
-            }
-        }
-    });
-    
-    
-    
-    console.log('Interacciones de imágenes diagonales inicializadas exitosamente');
 }
 
-// ============================================
-// INTERACCIONES DEL BOTÓN CTA
-// ============================================
-
-function initCTAInteractions() {
-    const ctaButton = document.querySelector('.cta-button');
-    if (!ctaButton) return;
-
-    ctaButton.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateX(-50%) translateY(-4px) scale(1.02)';
-        this.style.boxShadow = '0 8px 24px rgba(255, 68, 68, 0.4)';
-        this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        const span = this.querySelector('span');
-        if (span) {
-            span.style.letterSpacing = '0.08em';
+function loadTexture(loader, fileName, label, onTextureLoaded) {
+    return loader.load(
+        `${TEXTURE_PATH}${fileName}`,
+        onTextureLoaded,
+        undefined,
+        () => {
+            console.error(`Error al cargar la textura ${label}`);
+            onTextureLoaded();
         }
-    });
-    
-    ctaButton.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateX(-50%) translateY(0) scale(1)';
-        this.style.boxShadow = '0 4px 12px rgba(255, 68, 68, 0.3)';
-        
-        const span = this.querySelector('span');
-        if (span) {
-            span.style.letterSpacing = '0.05em';
+    );
+}
+
+function loadGoldTextures(onTextureLoaded) {
+    const loader = new THREE.TextureLoader();
+    return {
+        albedo: loadTexture(loader, TEXTURE_FILES.albedo, 'albedo', onTextureLoaded),
+        normal: loadTexture(loader, TEXTURE_FILES.normal, 'normal', onTextureLoaded),
+        metallic: loadTexture(loader, TEXTURE_FILES.metallic, 'metallic', onTextureLoaded),
+        roughness: loadTexture(loader, TEXTURE_FILES.roughness, 'roughness', onTextureLoaded),
+        ao: loadTexture(loader, TEXTURE_FILES.ao, 'ao', onTextureLoaded)
+    };
+}
+
+function configureTextures(textures) {
+    Object.entries(textures).forEach(([key, texture]) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(1, 1);
+
+        if (key === 'albedo' && texture.colorSpace !== undefined) {
+            texture.colorSpace = THREE.SRGBColorSpace;
         }
-    });
-
-    ctaButton.addEventListener('mousedown', function() {
-        this.style.transform = 'translateX(-50%) translateY(-2px) scale(0.98)';
-    });
-
-    ctaButton.addEventListener('mouseup', function() {
-        this.style.transform = 'translateX(-50%) translateY(-4px) scale(1.02)';
     });
 }
 
-// ============================================
-// INTERACCIONES DE NAVEGACIÓN
-// ============================================
-
-function initNavigationInteractions() {
-    const navItems = document.querySelectorAll('.nav-item');
-    
-    navItems.forEach((item, index) => {
-        item.addEventListener('mouseenter', function() {
-            const letter = this.querySelector('span');
-            if (letter) {
-                letter.style.transform = 'scale(1.2)';
-                letter.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            }
-            
-            // Mover punto si está activo
-            const dot = this.querySelector('.nav-dot');
-            if (dot && this.classList.contains('active')) {
-                dot.style.transform = 'scale(1.3)';
-                dot.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            }
-        });
-        
-        item.addEventListener('mouseleave', function() {
-            const letter = this.querySelector('span');
-            if (letter) {
-                letter.style.transform = 'scale(1)';
-            }
-            
-            const dot = this.querySelector('.nav-dot');
-            if (dot) {
-                dot.style.transform = 'scale(1)';
-            }
-        });
-
-        // Click para activar
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remover active de todos
-            navItems.forEach(nav => nav.classList.remove('active'));
-            navItems.forEach(nav => {
-                const dot = nav.querySelector('.nav-dot');
-                if (dot) dot.style.display = 'none';
-            });
-            
-            // Agregar active al clickeado
-            this.classList.add('active');
-            const dot = this.querySelector('.nav-dot');
-            if (!dot) {
-                const newDot = document.createElement('div');
-                newDot.className = 'nav-dot';
-                this.appendChild(newDot);
-            } else {
-                dot.style.display = 'block';
-            }
-        });
+function createGoldMaterial(textures) {
+    const { albedo, normal, metallic, roughness, ao } = textures;
+    return new THREE.MeshStandardMaterial({
+        color: new THREE.Color('#f6d267'), // tono dorado calido
+        map: albedo,
+        normalMap: normal,
+        normalScale: new THREE.Vector2(1.2, 1.2),
+        metalnessMap: metallic,
+        roughnessMap: roughness,
+        aoMap: ao,
+        aoMapIntensity: 1.1,
+        metalness: 1.0, // metal completo para simular oro
+        roughness: 0.3, // rugosidad ligera para hacerlo realista
+        emissive: new THREE.Color(0x000000), // sin emision
+        emissiveIntensity: 0
     });
 }
 
-// ============================================
-// INTERACCIONES DEL SELECTOR DE IDIOMA
-// ============================================
-
-function initLanguageSelectorInteractions() {
-    const languageSelector = document.querySelector('.language-selector');
-    if (!languageSelector) return;
-
-    let isOpen = false;
-
-    languageSelector.addEventListener('mouseenter', function() {
-        this.style.opacity = '0.8';
-        this.style.transform = 'translateY(-2px)';
-            this.style.transition = 'all 0.3s ease';
-            
-        const chevron = this.querySelector('.chevron');
-        if (chevron) {
-            chevron.style.transform = 'rotate(180deg)';
-            chevron.style.transition = 'transform 0.3s ease';
-        }
-    });
-    
-    languageSelector.addEventListener('mouseleave', function() {
-        if (!isOpen) {
-            this.style.opacity = '1';
-            this.style.transform = 'translateY(0)';
-            
-            const chevron = this.querySelector('.chevron');
-            if (chevron) {
-                chevron.style.transform = 'rotate(0deg)';
-            }
-        }
-    });
-
-    languageSelector.addEventListener('click', function(e) {
-        e.preventDefault();
-        isOpen = !isOpen;
-        
-        // Alternar idioma (toggle simple para demo)
-        const span = this.querySelector('span');
-        if (span) {
-            span.textContent = isOpen ? '(ES)' : '(EN)';
-            }
-        });
-    }
-    
-// ============================================
-// INTERACCIONES DEL BOTÓN HAMBURGUESA
-// ============================================
-
-function initHamburgerInteractions() {
-    const hamburgerButton = document.querySelector('.hamburger-button');
-    if (!hamburgerButton) return;
-
-    let isOpen = false;
-
-    hamburgerButton.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.1) rotate(90deg)';
-        this.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-    });
-    
-    hamburgerButton.addEventListener('mouseleave', function() {
-        if (!isOpen) {
-            this.style.transform = 'scale(1) rotate(0deg)';
-        }
-    });
-
-    hamburgerButton.addEventListener('click', function() {
-        isOpen = !isOpen;
-        
-        const spans = this.querySelectorAll('span');
-        if (isOpen) {
-            // Transformar a X
-            this.style.transform = 'scale(1.1) rotate(90deg)';
-            spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-        } else {
-            // Volver a hamburguesa
-            this.style.transform = 'scale(1) rotate(0deg)';
-            spans[0].style.transform = 'rotate(0deg) translate(0, 0)';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'rotate(0deg) translate(0, 0)';
-        }
-        
-        spans.forEach(span => {
-            span.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        });
-    });
-}
-
-// ============================================
-// INTERACCIONES DEL INDICADOR DE SCROLL
-// ============================================
-
-function initScrollIndicatorInteractions() {
-    const scrollArrow = document.querySelector('.scroll-arrow');
-    const scrollIndicator = document.querySelector('.scroll-indicator');
-    
-    if (!scrollArrow || !scrollIndicator) return;
-
-    // Animar flecha
-    function animateArrow() {
-        scrollArrow.style.transform = 'translateY(0)';
-        scrollArrow.style.transition = 'transform 0.6s ease-in-out';
-        
-        setTimeout(() => {
-            scrollArrow.style.transform = 'translateY(8px)';
-        }, 300);
-    }
-
-    setInterval(animateArrow, 1200);
-
-    scrollArrow.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(5px) scale(1.1)';
-        this.style.background = 'rgba(255, 68, 68, 0.9)';
-            this.style.transition = 'all 0.3s ease';
-        });
-        
-    scrollArrow.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0) scale(1)';
-        this.style.background = '#ff4444';
-    });
-
-    scrollArrow.addEventListener('click', function() {
-        window.scrollBy({
-            top: window.innerHeight,
-            behavior: 'smooth'
-        });
-    });
-}
-
-// ============================================
-// ANIMACIONES DE ENTRADA SUAVES
-// ============================================
-
-function initFadeInAnimations() {
-    const elements = [
-        { selector: '.header', delay: 0 },
-        { selector: '.headline-container', delay: 200 },
-        { selector: '.diagonal-gallery', delay: 300 },
-        { selector: '.explanatory-text', delay: 600 },
-        { selector: '.cta-button', delay: 800 },
-        { selector: '.scroll-indicator', delay: 1000 }
+function createMeshes(targetScene, material) {
+    const meshConfigs = [
+        { key: 'cube', geometry: new THREE.BoxGeometry(2, 2, 2), position: new THREE.Vector3(-4, 0, 0) },
+        { key: 'sphere', geometry: new THREE.SphereGeometry(1.5, 32, 32), position: new THREE.Vector3(0, 0, 0) },
+        { key: 'torus', geometry: new THREE.TorusGeometry(1.2, 0.5, 16, 100), position: new THREE.Vector3(4, 0, 0) }
     ];
 
-    elements.forEach(({ selector, delay }) => {
-        const element = document.querySelector(selector);
-        if (element) {
-            element.style.opacity = '0';
-            element.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-            
-            // Establecer transformación inicial basada en el elemento
-            if (selector === '.scroll-indicator') {
-                element.style.transform = 'translateY(-50%) translateX(30px)';
-            } else if (selector === '.headline-container') {
-                element.style.transform = 'translate(-50%, -50%) translateY(40px)';
-            } else if (selector === '.diagonal-gallery') {
-                // Mostrar contenedor de galería primero
-                element.style.opacity = '1';
-                
-                // Luego animar cada imagen individualmente con escalonamiento
-                const diagonalImages = element.querySelectorAll('.diagonal-image');
-                
-                diagonalImages.forEach((img, idx) => {
-                    // Comenzar oculta y escalada en posición debajo de "Siempre"
-                    img.style.opacity = '0';
-                    img.style.bottom = '28%';
-                    img.style.left = '50%';
-                    img.style.top = 'auto';
-                    img.style.width = '140px';
-                    img.style.height = '190px';
-                    img.style.transform = 'translateX(-650px) translateY(20px) rotate(0deg) scale(0.5)';
-                    img.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.8s ease, height 0.8s ease';
-                    
-                    // Animar a estado agrupado con escalonamiento (pila debajo de "Siempre")
-                    setTimeout(() => {
-                        // Diferentes transformaciones para cada imagen para crear efecto de pila escalonada
-                        const transforms = [
-                            { translateX: -650, translateY: 0, rotate: '-5deg' },
-                            { translateX: -625, translateY: 15, rotate: '3deg' },
-                            { translateX: -600, translateY: 30, rotate: '-2deg' },
-                            { translateX: -575, translateY: 45, rotate: '4deg' },
-                            { translateX: -550, translateY: 60, rotate: '-3deg' }
-                        ];
-                        
-                        const opacities = [1, 0.85, 0.7, 0.55, 0.4];
-                        
-                        const transform = transforms[idx] || { translateX: -650, translateY: 0, rotate: '0deg' };
-                        
-                        img.style.opacity = opacities[idx] || 0.95;
-                        img.style.width = '140px';
-                        img.style.height = '190px';
-                        img.style.transform = `translateX(${transform.translateX}px) translateY(${transform.translateY}px) rotate(${transform.rotate}) scale(1)`;
-                        
-                        // Agregar borde a la primera imagen
-                        if (idx === 0) {
-                            img.style.border = '2px solid #ff4444';
-                        } else {
-                            img.style.border = 'none';
-                        }
-                    }, delay + (idx * 60));
-                });
-                
-                // No animar el contenedor de la galería en sí
-                return;
-            } else if (selector === '.explanatory-text') {
-                element.style.transform = 'translateX(40px)';
-            } else if (selector === '.cta-button') {
-                element.style.transform = 'translateX(-50%) translateY(30px)';
-            } else {
-                element.style.transform = 'translateY(-20px)';
-            }
-            
-        setTimeout(() => {
-                element.style.opacity = '1';
-                element.style.transform = selector === '.scroll-indicator' 
-                    ? 'translateY(-50%) translateX(0)' 
-                    : selector === '.headline-container'
-                    ? 'translate(-50%, -50%)'
-                    : selector === '.cta-button'
-                    ? 'translateX(-50%)'
-                    : 'translate(0)';
-            }, delay);
+    return meshConfigs.map(({ key, geometry, position }) => {
+        const mesh = new THREE.Mesh(geometry, material);
+        const bbox = new THREE.Box3().setFromObject(mesh);
+        const centerX = (bbox.max.x + bbox.min.x) / 2;
+        const anchor = new THREE.Vector3(centerX, bbox.min.y, bbox.max.z);
+        mesh.position.sub(anchor);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        const group = new THREE.Group();
+        group.position.copy(position);
+        group.add(mesh);
+        targetScene.add(group);
+
+        return { key, mesh, group, baseScale: 1 };
+    });
+}
+
+function createMeshControllers(meshData) {
+    return meshData.map(({ key, mesh, group, baseScale }) => ({
+        key,
+        mesh,
+        group,
+        baseScale,
+        animation: null
+    }));
+}
+
+function setGroupScale(group, scaleValue) {
+    group.scale.set(scaleValue, scaleValue, scaleValue);
+}
+
+function getLayoutSettings() {
+    const width = window.innerWidth;
+    if (width >= 1600) return { baseScale: 1.05, spacing: 0.34, verticalOffset: -0.05 };
+    if (width >= 1300) return { baseScale: 0.98, spacing: 0.32, verticalOffset: -0.045 };
+    if (width >= 1000) return { baseScale: 0.9, spacing: 0.3, verticalOffset: -0.04 };
+    if (width >= 768) return { baseScale: 0.82, spacing: 0.28, verticalOffset: -0.03 };
+    if (width >= 560) return { baseScale: 0.72, spacing: 0.26, verticalOffset: -0.025 };
+    return { baseScale: 0.62, spacing: 0.24, verticalOffset: -0.02 };
+}
+
+function layoutMeshGroups(meshDataArr) {
+    if (!meshDataArr.length) return;
+    const { baseScale, spacing, verticalOffset } = getLayoutSettings();
+
+    const widths = meshDataArr.map(({ mesh }) => {
+        const bbox = new THREE.Box3().setFromObject(mesh);
+        return (bbox.max.x - bbox.min.x) * baseScale;
+    });
+
+    const actualSpacing = spacing * baseScale;
+    const totalWidth = widths.reduce((sum, width) => sum + width, 0) + actualSpacing * (meshDataArr.length - 1);
+    let currentX = -totalWidth / 2;
+
+    meshDataArr.forEach((data, index) => {
+        const width = widths[index];
+        const centerX = currentX + width / 2;
+        data.group.position.set(centerX, verticalOffset, 0);
+        data.group.rotation.set(0, 0, 0);
+        setGroupScale(data.group, baseScale);
+        data.baseScale = baseScale;
+        currentX += width;
+        if (index < meshDataArr.length - 1) {
+            currentX += actualSpacing;
+        }
+    });
+
+    if (meshControllers.length) {
+        meshControllers.forEach((controller, index) => {
+            controller.baseScale = meshDataArr[index].baseScale;
+            controller.animation = null;
+            controller.group.rotation.set(0, 0, 0);
+            setGroupScale(controller.group, controller.baseScale);
+        });
+    }
+    updateCameraPosition(totalWidth);
+}
+
+function easeOutBounce(t) {
+    const n1 = 7.5625;
+    const d1 = 2.75;
+    if (t < 1 / d1) {
+        return n1 * t * t;
+    } else if (t < 2 / d1) {
+        t -= 1.5 / d1;
+        return n1 * t * t + 0.75;
+    } else if (t < 2.5 / d1) {
+        t -= 2.25 / d1;
+        return n1 * t * t + 0.9375;
+    }
+    t -= 2.625 / d1;
+    return n1 * t * t + 0.984375;
+}
+
+function easeInBounce(t) {
+    return 1 - easeOutBounce(1 - t);
+}
+
+function easeOutElastic(t) {
+    const c4 = (2 * Math.PI) / 3;
+    return t === 0
+        ? 0
+        : t === 1
+            ? 1
+            : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+}
+
+function easeInOutQuad(t) {
+    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+}
+
+function getEasingValue(easing, t) {
+    switch (easing) {
+        case 'easeInBounce':
+            return easeInBounce(t);
+        case 'easeOutBounce':
+            return easeOutBounce(t);
+        case 'easeOutElastic':
+            return easeOutElastic(t);
+        case 'easeInOutQuad':
+            return easeInOutQuad(t);
+        default:
+            return t;
+    }
+}
+
+function startTransformAnimation(
+    controller,
+    { scaleFactor = 1, scale, rotationX = 0 },
+    duration = 450,
+    easing = 'easeOutElastic'
+) {
+    if (!controller) return;
+    const baseScale = controller.baseScale ?? controller.group.scale.x;
+    const targetScale = scale !== undefined ? scale : baseScale * scaleFactor;
+
+    controller.animation = {
+        startScale: controller.group.scale.x,
+        targetScale,
+        startRotationX: controller.group.rotation.x,
+        targetRotationX: rotationX,
+        duration,
+        easing,
+        startTime: performance.now()
+    };
+}
+
+function updateMeshAnimations() {
+    const now = performance.now();
+    meshControllers.forEach(controller => {
+        const anim = controller.animation;
+        if (!anim) return;
+
+        const elapsed = now - anim.startTime;
+        const progress = Math.min(elapsed / anim.duration, 1);
+        const easedProgress = getEasingValue(anim.easing, progress);
+
+        const scaleValue = THREE.MathUtils.lerp(
+            anim.startScale,
+            anim.targetScale,
+            easedProgress
+        );
+        const rotationX = THREE.MathUtils.lerp(
+            anim.startRotationX,
+            anim.targetRotationX,
+            easedProgress
+        );
+        setGroupScale(controller.group, scaleValue);
+        controller.group.rotation.x = rotationX;
+
+        if (progress >= 1) {
+            setGroupScale(controller.group, anim.targetScale);
+            controller.group.rotation.x = anim.targetRotationX;
+            controller.animation = null;
         }
     });
 }
 
-// ============================================
-// INICIALIZACIÓN
-// ============================================
+function initInteraction(canvas) {
+    if (!canvas) return;
+    raycaster = new THREE.Raycaster();
+    pointer = new THREE.Vector2();
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar todas las interacciones
-    initCursorFollow();
-    initHeadlineInteractions();
-    initHeadlineImageInteractions();
-    initIllustrationInteractions();
-    initDiagonalImageInteractions();
-    initCTAInteractions();
-    initNavigationInteractions();
-    initLanguageSelectorInteractions();
-    initHamburgerInteractions();
-    initScrollIndicatorInteractions();
-    initFadeInAnimations();
-    
-    // Agregar transiciones suaves a las palabras del headline
-    const headlineWords = document.querySelectorAll('.headline-word');
-    headlineWords.forEach(word => {
-        word.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-    });
-});
+    canvas.addEventListener('mousemove', handlePointerMove);
+    canvas.addEventListener('mouseleave', handlePointerLeave);
+}
+
+function handlePointerMove(event) {
+    if (!raycaster || !pointer || meshControllers.length === 0) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObjects(meshControllers.map(controller => controller.mesh));
+    const newController = intersects.length ? meshControllers.find(controller => controller.mesh === intersects[0].object) : null;
+
+    if (newController !== hoveredController) {
+        if (hoveredController) {
+            startTransformAnimation(hoveredController, { scaleFactor: 1, rotationX: 0 }, 520, 'easeInOutQuad');
+        }
+        if (newController) {
+            const targetRotation = newController.key === 'sphere' ? 0.35 : -0.35;
+            startTransformAnimation(newController, { scaleFactor: 0.92, rotationX: targetRotation }, 700, 'easeOutElastic');
+        }
+        hoveredController = newController;
+    }
+}
+
+function handlePointerLeave() {
+    if (hoveredController) {
+        startTransformAnimation(hoveredController, { scaleFactor: 1, rotationX: 0 }, 520, 'easeInOutQuad');
+        hoveredController = null;
+    }
+    meshControllers.forEach(controller =>
+        startTransformAnimation(controller, { scaleFactor: 1, rotationX: 0 }, 520, 'easeInOutQuad')
+    );
+}
+
+// Inicializa la escena
+function init() {
+    scene = createScene();
+    camera = createCamera();
+    const canvas = document.getElementById(CANVAS_ID);
+    renderer = createRenderer(canvas);
+
+    setupLights(scene, camera);
+
+    const handleTextureLoaded = createTextureLoadTracker(TOTAL_TEXTURES);
+    const textures = loadGoldTextures(handleTextureLoaded);
+    configureTextures(textures);
+
+    const material = createGoldMaterial(textures);
+    meshData = createMeshes(scene, material);
+    meshControllers = createMeshControllers(meshData);
+    layoutMeshGroups(meshData);
+    geometries = meshData.map(item => item.group);
+    initInteraction(canvas);
+
+    // Maneja el redimensionamiento de la ventana
+    window.addEventListener('resize', onWindowResize);
+}
+
+// Bucle de animacion
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Mantiene las geometrias en su posicion base (sin rotacion continua)
+
+    updateMeshAnimations();
+
+    // Renderiza la escena
+    renderer.render(scene, camera);
+}
+
+// Maneja el redimensionamiento
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    layoutMeshGroups(meshData);
+}
+
+// Oculta el loader con una transicion suave
+function hideLoader() {
+    const loaderElement = document.getElementById('loader');
+    if (loaderElement && !loaderElement.classList.contains('hidden')) {
+        // Agrega un efecto de desvanecimiento
+        loaderElement.style.transition = 'opacity 0.8s ease, visibility 0.8s ease';
+        loaderElement.style.opacity = '0';
+        
+        setTimeout(() => {
+            loaderElement.classList.add('hidden');
+        }, 800);
+    }
+}
+
+// Inicializa cuando el DOM esta listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
